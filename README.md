@@ -26,6 +26,33 @@ A native Discord client for the jailbroken PS5. It is a standalone homebrew app,
 - **Coming back to a call**: if the console suspended PSCord, it rejoins the voice channel when Discord reconnects, and mentions and direct messages raise a system notification.
 - **Community**: every few launches, and from Settings, PSCord offers [Desstann Homebrew](https://discord.gg/wfTch3qUa6).
 
+## Roadmap
+
+Checklist of work still ahead. PRs that move any of these forward are welcome.
+
+### Background voice
+- [ ] Stable background audio via process-local PartyDaemon inject (replace fragile ptrace-per-grain pumping)
+- [ ] Idle silence, pump re-inject on PartyDaemon restart, and clear “in call in the background” UI state
+
+### Game streaming
+- [ ] Watch Discord Go Live / Activity streams (video decode + overlay)
+- [ ] Share the PS5 screen to Discord Go Live (capture → encode → gateway)
+
+### Security
+- [ ] Protect the on-console session token (encrypt `session.txt` or equivalent)
+- [ ] Harden LAN web login (`:8090`) with TLS or a one-time code instead of cleartext token handoff
+
+### Voice UX
+- [ ] Deafen, server mute, push-to-talk / headset routing, and stage channels
+
+### Chat and media
+- [ ] Edit and delete messages, file upload, threads, slash commands / sticker picker
+- [ ] Play video attachments; improve GIF and large-embed performance
+
+### Project hygiene
+- [ ] Publish a CI ccache snapshot; keep the public repo in sync with the private app tree
+- [ ] Keep this roadmap and `docs/PARTY_DAEMON_BG_VOICE.md` accurate as background voice lands
+
 ## Screenshots
 
 <p align="center">
