@@ -1,4 +1,7 @@
-/* Flat PIC beep player for injection into ShellUI. No libc. */
+/* PSCord - Flat PIC beep player for injection into ShellUI. No libc.
+ * Copyright (C) 2026 Desstann
+ * SPDX-License-Identifier: MIT
+ */
 #include "beep_shim_abi.h"
 
 static inline long raw_syscall2(long n, long a0, long a1) {

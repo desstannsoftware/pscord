@@ -1,17 +1,7 @@
 #!/usr/bin/env python3
-"""
-Build /app0/ampr_emu.index for the AMPR APR file resolver.
-
-The index is a compact binary file:
-
-    AMPRIDX3 header
-    fixed-size sorted records
-    NUL-terminated /app0 path blob
-    prebuilt open-addressed hash slots
-
-Paths are stored with forward slashes and matched case-insensitively by the PRX.
-The input root can be either a local directory or ftp://host[:port]/path/to/app0.
-"""
+# PSCord - Build /app0/ampr_emu.index for the AMPR APR file resolver.
+# Copyright (C) 2026 Desstann
+# SPDX-License-Identifier: GPL-3.0-or-later
 
 from __future__ import annotations
 

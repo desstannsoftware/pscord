@@ -1,3 +1,7 @@
+/* PSCord - Linker script for inject shims.
+ * Copyright (C) 2026 Desstann
+ * SPDX-License-Identifier: MIT
+ */
 /* Lay the shim out as a flat blob with shim_entry at offset 0, no dynamic
  * sections, so the injector can copy it straight into the target and jump to
  * the start of the mapping. */

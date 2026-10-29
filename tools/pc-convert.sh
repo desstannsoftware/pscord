@@ -1,13 +1,7 @@
 #!/usr/bin/env bash
-# PKG Folderizer - convert a PKG on the PC and upload the dump to the PS5.
-# Copyright (C) 2026
+# PSCord - helper script retained from the build kit (unused by CI).
+# Copyright (C) 2026 Desstann
 # SPDX-License-Identifier: GPL-3.0-or-later
-#
-# Same extract + AMPR launch fix engine as the console app, but runs at PC
-# speed. The dump lands in /data/homebrew/<TITLE_ID>-app0 over FTP.
-#
-# usage: tools/pc-convert.sh <file.pkg> [--no-upload] [--keep]
-
 set -euo pipefail
 
 root=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)

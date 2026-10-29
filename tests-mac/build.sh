@@ -1,5 +1,7 @@
 #!/bin/sh
-# Builds the PC harnesses for the Discord core (macOS, Homebrew OpenSSL).
+# PSCord - Build Mac host smoke tools.
+# Copyright (C) 2026 Desstann
+# SPDX-License-Identifier: MIT
 set -e
 cd "$(dirname "$0")/.."
 ossl=$(brew --prefix openssl@3)

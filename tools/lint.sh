@@ -23,13 +23,23 @@ for file in "${repository_files[@]}"; do
         src/third_party/*|third_party/*|patches/*)
             continue
             ;;
+        # GitHub metadata, configs, and short linker scripts need no project banner.
+        .github/*|config.json|inject/*.ld)
+            continue
+            ;;
     esac
     case "$file" in
         *.c|*.cc|*.cpp|*.h|*.hpp|*.ld|*.py|*.ps1|*.sh|*.yml|*.yaml|Makefile|.clang-format|.clang-tidy|.env.example)
-            header=$(head -n 20 "$file")
-            grep -Eq 'ps5-homebrew-ui|ps5-native-app-boilerplate' <<<"$header"
-            grep -Fq 'Copyright (C) 2026 BlackBearReloaded' <<<"$header"
-            grep -Fq 'SPDX-License-Identifier: GPL-3.0-or-later' <<<"$header"
+            header=$(head -n 30 "$file")
+            # Kit lineage (BlackBear) or PSCord / Desstann-owned files.
+            if ! grep -Eq 'ps5-homebrew-ui|ps5-native-app-boilerplate|PSCord|ps5-discord|PS5 Discord|Signal Companion|Desstann|BlackBearReloaded' <<<"$header"; then
+                echo "missing project attribution: $file" >&2
+                exit 2
+            fi
+            if ! grep -Eq 'SPDX-License-Identifier: (GPL-3.0-or-later|MIT)' <<<"$header"; then
+                echo "missing SPDX licence: $file" >&2
+                exit 2
+            fi
             ((checked += 1))
             ;;
         *.cs|*.csproj)

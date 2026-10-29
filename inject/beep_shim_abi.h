@@ -1,3 +1,7 @@
+/* PSCord - ABI for the ShellUI beep shim.
+ * Copyright (C) 2026 Desstann
+ * SPDX-License-Identifier: MIT
+ */
 #ifndef PSCORD_BEEP_SHIM_ABI_H
 #define PSCORD_BEEP_SHIM_ABI_H
 #include <stdint.h>

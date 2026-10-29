@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 # Signal Companion - Runs a command in the build container with the project mounted at the same path.
+# Copyright (C) 2026 BlackBearReloaded
 # SPDX-License-Identifier: GPL-3.0-or-later
 set -euo pipefail
 root=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)

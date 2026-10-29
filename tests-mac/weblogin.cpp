@@ -1,4 +1,6 @@
-// Runs the Discord session with the PC sign-in page on a Mac, printing each state change.
+// PSCord - Discord session with the PC sign-in page on a Mac.
+// Copyright (C) 2026 Desstann
+// SPDX-License-Identifier: MIT
 #include <chrono>
 #include <cstdio>
 #include <thread>

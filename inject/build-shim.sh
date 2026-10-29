@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
-# Build the ShellCore shim as a flat position-independent blob (shim_entry at
-# offset 0) plus a C header embedding it for the injector.
+# PSCord - Build a flat position-independent inject shim blob.
+# Copyright (C) 2026 Desstann
+# SPDX-License-Identifier: MIT
 set -euo pipefail
 cd "$(dirname "$0")/.."
 

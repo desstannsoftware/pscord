@@ -1,4 +1,7 @@
-/* Unstick ScePartyDaemon after a killed ptrace pump left it stopped. */
+/* PSCord - Unstick ScePartyDaemon after a killed ptrace pump left it stopped.
+ * Copyright (C) 2026 Desstann
+ * SPDX-License-Identifier: MIT
+ */
 #include <sys/types.h>
 #include <sys/sysctl.h>
 #include <sys/user.h>

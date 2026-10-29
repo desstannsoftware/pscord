@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 # ps5-discord - Builds a release and its OTA update; --publish uploads it.
+# Copyright (C) 2026 Desstann
 #   tools/release.sh 01.001.000 "Sürüm notu" [--publish]
 # Sets contentVersion in sce_sys/param.json, builds in the container, writes
 # dist/release/<version>/PPSA99190.zip.
