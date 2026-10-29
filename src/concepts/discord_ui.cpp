@@ -100,8 +100,8 @@ void Images::update()
         entry.total_ms = 0;
         for (int d : entry.delays_ms)
             entry.total_ms += d;
-        entry.bytes = static_cast<std::size_t>(picture.width) * static_cast<std::size_t>(picture.height) * 4 *
-                      picture.frames.size();
+        entry.bytes = static_cast<std::size_t>(picture.width) *
+                      static_cast<std::size_t>(picture.height) * 4 * picture.frames.size();
         bytes_ += entry.bytes;
     }
     if (bytes_ > kBudget)
@@ -183,7 +183,8 @@ struct LineBuilder
             run.style = p.style;
             run.baseline = mid + p.size * 0.36f;
             run.top = mid - p.w * 0.5f;
-            const std::uint16_t kind = p.style & (dc::md::kCode | dc::md::kMention | dc::md::kTime | dc::md::kSpoiler);
+            const std::uint16_t kind =
+                p.style & (dc::md::kCode | dc::md::kMention | dc::md::kTime | dc::md::kSpoiler);
             if (kind)
             {
                 const float bh = p.size * 1.3f;
@@ -272,8 +273,8 @@ struct LineBuilder
 
 } // namespace
 
-RichText layout_rich(const std::vector<dc::md::Block> &blocks, const ui::Fonts &fonts, float width, float base,
-                     gfx::Color color)
+RichText layout_rich(const std::vector<dc::md::Block> &blocks, const ui::Fonts &fonts, float width,
+                     float base, gfx::Color color)
 {
     RichText out;
     const bool jumbo = dc::md::emoji_only(blocks);
@@ -329,9 +330,10 @@ RichText layout_rich(const std::vector<dc::md::Block> &blocks, const ui::Fonts &
             for (std::size_t start = 0;;)
             {
                 const std::size_t nl = code.find('\n', start);
-                std::string line = code.substr(start, nl == std::string::npos ? std::string::npos : nl - start);
-                for (const std::string &part : fonts.mono.font->wrap(line.empty() ? " " : line, code_size,
-                                                                     width - x0 - pad * 2))
+                std::string line =
+                    code.substr(start, nl == std::string::npos ? std::string::npos : nl - start);
+                for (const std::string &part : fonts.mono.font->wrap(
+                         line.empty() ? " " : line, code_size, width - x0 - pad * 2))
                     lines.push_back(part);
                 if (nl == std::string::npos)
                     break;
@@ -339,7 +341,8 @@ RichText layout_rich(const std::vector<dc::md::Block> &blocks, const ui::Fonts &
             }
             y += 6;
             const float h = static_cast<float>(lines.size()) * code_h + pad * 2;
-            out.under.push_back({{x0, y, width - x0, h}, 6, palette::code_bg, palette::code_border});
+            out.under.push_back(
+                {{x0, y, width - x0, h}, 6, palette::code_bg, palette::code_border});
             float line_y = y + pad;
             for (const std::string &line : lines)
             {
@@ -358,7 +361,9 @@ RichText layout_rich(const std::vector<dc::md::Block> &blocks, const ui::Fonts &
         }
         else
         {
-            LineBuilder builder{fonts, out, width, x0, line_h, jumbo ? 72.0f : std::round(size * 1.375f), y, x0, {}};
+            LineBuilder builder{fonts, out,    width,
+                                x0,    line_h, jumbo ? 72.0f : std::round(size * 1.375f),
+                                y,     x0,     {}};
             if (b.list)
             {
                 RichRun bullet;
@@ -376,7 +381,9 @@ RichText layout_rich(const std::vector<dc::md::Block> &blocks, const ui::Fonts &
                 Piece base_piece;
                 base_piece.style = span.style;
                 base_piece.group = span.group;
-                base_piece.font = (span.style & dc::md::kCode) ? 2 : (span.style & dc::md::kBold) || font ? 1 : 0;
+                base_piece.font = (span.style & dc::md::kCode)           ? 2
+                                  : (span.style & dc::md::kBold) || font ? 1
+                                                                         : 0;
                 base_piece.size = (span.style & dc::md::kCode) ? std::round(size * 0.875f) : size;
                 base_piece.color = (span.style & dc::md::kLink)      ? palette::link
                                    : (span.style & dc::md::kMention) ? palette::mention_text
@@ -442,10 +449,12 @@ void draw_rich(gfx::DrawList &list, const ui::Fonts &fonts, const RichText &text
         {
             const int px = run.w > 40 ? 96 : 48;
             if (const std::uint32_t tex = images.get(run.emoji, px, px, clock))
-                list.image(tex, {x + run.x, y + run.top, run.w, run.w}, gfx::kFullUv, palette::white);
+                list.image(tex, {x + run.x, y + run.top, run.w, run.w}, gfx::kFullUv,
+                           palette::white);
             continue;
         }
-        ui::text(list, font_of(fonts, run.font), run.text, x + run.x, y + run.baseline, run.size, run.color);
+        ui::text(list, font_of(fonts, run.font), run.text, x + run.x, y + run.baseline, run.size,
+                 run.color);
     }
     for (const RichBox &b : text.over)
         list.rounded_rect({x + b.r.x, y + b.r.y, b.r.w, b.r.h}, b.radius, b.fill);
@@ -461,9 +470,9 @@ float measure_label(const ui::FontRef &font, const std::string &text, float size
     return w;
 }
 
-float draw_label(gfx::DrawList &list, const ui::Fonts &fonts, const ui::FontRef &font, const std::string &text,
-                 float x, float baseline, float size, gfx::Color color, float max_w, const Images &images,
-                 float clock)
+float draw_label(gfx::DrawList &list, const ui::Fonts &fonts, const ui::FontRef &font,
+                 const std::string &text, float x, float baseline, float size, gfx::Color color,
+                 float max_w, const Images &images, float clock)
 {
     (void)fonts;
     std::vector<dc::md::Span> spans;
@@ -480,7 +489,8 @@ float draw_label(gfx::DrawList &list, const ui::Fonts &fonts, const ui::FontRef 
             if (cx + emoji > limit)
                 break;
             if (const std::uint32_t tex = images.get(s.emoji_url, 48, 48, clock))
-                list.image(tex, {cx, baseline - size * 0.36f - emoji * 0.5f, emoji, emoji}, gfx::kFullUv,
+                list.image(tex, {cx, baseline - size * 0.36f - emoji * 0.5f, emoji, emoji},
+                           gfx::kFullUv,
                            color.a < 1.0f ? palette::white.with_alpha(color.a) : palette::white);
             cx += emoji + 2;
             continue;
@@ -512,17 +522,18 @@ float draw_label(gfx::DrawList &list, const ui::Fonts &fonts, const ui::FontRef 
 
 // ---- channel icons ----------------------------------------------------------
 
-void draw_channel_icon(gfx::DrawList &list, int type, bool rules, float x, float cy, float size, gfx::Color color)
+void draw_channel_icon(gfx::DrawList &list, int type, bool rules, float x, float cy, float size,
+                       gfx::Color color)
 {
     const float s = size / 24.0f; // drawn on a 24-unit grid, as Discord's icons are
     const float t = 2.2f * s;
-    auto L = [&](float x1, float y1, float x2, float y2) {
-        list.line(x + x1 * s, cy + (y1 - 12) * s, x + x2 * s, cy + (y2 - 12) * s, t, color);
-    };
+    auto L = [&](float x1, float y1, float x2, float y2)
+    { list.line(x + x1 * s, cy + (y1 - 12) * s, x + x2 * s, cy + (y2 - 12) * s, t, color); };
     if (rules)
     {
         // A book with a tick.
-        list.bordered_rect({x + 4 * s, cy - 9 * s, 16 * s, 18 * s}, 2.5f * s, palette::clear, t, color);
+        list.bordered_rect({x + 4 * s, cy - 9 * s, 16 * s, 18 * s}, 2.5f * s, palette::clear, t,
+                           color);
         L(8, 12, 11, 15);
         L(11, 15, 16, 9);
         return;
@@ -530,9 +541,11 @@ void draw_channel_icon(gfx::DrawList &list, int type, bool rules, float x, float
     switch (type)
     {
     case 2: // voice: speaker and two waves
-    case 13: {
-        const float poly[] = {x + 3 * s,  cy - 3.5f * s, x + 7 * s,  cy - 3.5f * s, x + 12 * s, cy - 8 * s,
-                              x + 12 * s, cy + 8 * s,    x + 7 * s,  cy + 3.5f * s, x + 3 * s,  cy + 3.5f * s};
+    case 13:
+    {
+        const float poly[] = {x + 3 * s,  cy - 3.5f * s, x + 7 * s,  cy - 3.5f * s,
+                              x + 12 * s, cy - 8 * s,    x + 12 * s, cy + 8 * s,
+                              x + 7 * s,  cy + 3.5f * s, x + 3 * s,  cy + 3.5f * s};
         list.polygon(poly, 6, color);
         L(15, 9, 16, 12);
         L(16, 12, 15, 15);
@@ -542,9 +555,11 @@ void draw_channel_icon(gfx::DrawList &list, int type, bool rules, float x, float
             list.ring(x + 12 * s, cy, 11 * s, t * 0.6f, color);
         return;
     }
-    case 5: { // announcement: a megaphone
-        const float poly[] = {x + 3 * s,  cy - 4 * s,  x + 8 * s,  cy - 4 * s, x + 18 * s, cy - 9 * s,
-                              x + 18 * s, cy + 9 * s,  x + 8 * s,  cy + 4 * s, x + 3 * s,  cy + 4 * s};
+    case 5:
+    { // announcement: a megaphone
+        const float poly[] = {x + 3 * s,  cy - 4 * s, x + 8 * s,  cy - 4 * s,
+                              x + 18 * s, cy - 9 * s, x + 18 * s, cy + 9 * s,
+                              x + 8 * s,  cy + 4 * s, x + 3 * s,  cy + 4 * s};
         list.polygon(poly, 6, color);
         L(7, 16, 9, 21);
         L(20, 10, 21, 10);
@@ -552,11 +567,14 @@ void draw_channel_icon(gfx::DrawList &list, int type, bool rules, float x, float
         return;
     }
     case 15: // forum: two speech bubbles
-        list.bordered_rect({x + 2 * s, cy - 9 * s, 14 * s, 11 * s}, 3 * s, palette::clear, t, color);
-        list.bordered_rect({x + 8 * s, cy - 1 * s, 14 * s, 10 * s}, 3 * s, palette::clear, t, color);
+        list.bordered_rect({x + 2 * s, cy - 9 * s, 14 * s, 11 * s}, 3 * s, palette::clear, t,
+                           color);
+        list.bordered_rect({x + 8 * s, cy - 1 * s, 14 * s, 10 * s}, 3 * s, palette::clear, t,
+                           color);
         return;
     case 16: // media: a picture frame
-        list.bordered_rect({x + 2 * s, cy - 8 * s, 20 * s, 16 * s}, 3 * s, palette::clear, t, color);
+        list.bordered_rect({x + 2 * s, cy - 8 * s, 20 * s, 16 * s}, 3 * s, palette::clear, t,
+                           color);
         list.circle(x + 8 * s, cy - 3 * s, 2 * s, color);
         L(5, 18, 11, 13);
         L(11, 13, 19, 19);

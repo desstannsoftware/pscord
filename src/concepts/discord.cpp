@@ -105,7 +105,8 @@ std::string upper_tr(const std::string &name)
     std::string out;
     for (std::size_t i = 0; i < name.size();)
     {
-        const std::size_t n = std::min(utf8_length(static_cast<unsigned char>(name[i])), name.size() - i);
+        const std::size_t n =
+            std::min(utf8_length(static_cast<unsigned char>(name[i])), name.size() - i);
         const std::string letter = name.substr(i, n);
         std::string mapped = ui::upper(letter);
         for (const auto &pair : kPairs)
@@ -201,7 +202,8 @@ std::string day_label(std::int64_t ts)
     std::tm local{};
     localtime_r(&t, &local);
     char buf[48];
-    std::snprintf(buf, sizeof(buf), "%d %s %d", local.tm_mday, i18n::month_name(local.tm_mon), local.tm_year + 1900);
+    std::snprintf(buf, sizeof(buf), "%d %s %d", local.tm_mday, i18n::month_name(local.tm_mon),
+                  local.tm_year + 1900);
     return buf;
 }
 
@@ -252,7 +254,8 @@ ui::KeyboardLayout turkish_letters()
 {
     ui::KeyboardLayout layout = ui::KeyboardLayout::letters();
     std::vector<ui::KeyboardKey> row;
-    const char *pairs[][2] = {{"ç", "Ç"}, {"ğ", "Ğ"}, {"ı", "I"}, {"i", "İ"}, {"ö", "Ö"}, {"ş", "Ş"}, {"ü", "Ü"}};
+    const char *pairs[][2] = {{"ç", "Ç"}, {"ğ", "Ğ"}, {"ı", "I"}, {"i", "İ"},
+                              {"ö", "Ö"}, {"ş", "Ş"}, {"ü", "Ü"}};
     for (const auto &pair : pairs)
     {
         ui::KeyboardKey key;
@@ -271,8 +274,9 @@ std::vector<bool> encode_qr(const std::string &text, int &size)
     size = 0;
     uint8_t code[qrcodegen_BUFFER_LEN_MAX];
     uint8_t tmp[qrcodegen_BUFFER_LEN_MAX];
-    if (text.empty() || !qrcodegen_encodeText(text.c_str(), tmp, code, qrcodegen_Ecc_MEDIUM, qrcodegen_VERSION_MIN,
-                                              qrcodegen_VERSION_MAX, qrcodegen_Mask_AUTO, true))
+    if (text.empty() ||
+        !qrcodegen_encodeText(text.c_str(), tmp, code, qrcodegen_Ecc_MEDIUM, qrcodegen_VERSION_MIN,
+                              qrcodegen_VERSION_MAX, qrcodegen_Mask_AUTO, true))
         return modules;
     size = qrcodegen_getSize(code);
     modules.resize(static_cast<std::size_t>(size * size));
@@ -283,14 +287,16 @@ std::vector<bool> encode_qr(const std::string &text, int &size)
 }
 
 // A QR code in black on a white card.
-void draw_qr(gfx::DrawList &list, const std::vector<bool> &modules, int size, const Rect &box, float inset)
+void draw_qr(gfx::DrawList &list, const std::vector<bool> &modules, int size, const Rect &box,
+             float inset)
 {
     list.rounded_rect(box, 12, palette::white);
     const float module = (box.w - inset * 2) / static_cast<float>(size);
     for (int r = 0; r < size; ++r)
         for (int c = 0; c < size; ++c)
             if (modules[static_cast<std::size_t>(r * size + c)])
-                list.rounded_rect({box.x + inset + c * module, box.y + inset + r * module, module + 0.5f, module + 0.5f},
+                list.rounded_rect({box.x + inset + c * module, box.y + inset + r * module,
+                                   module + 0.5f, module + 0.5f},
                                   0, Color::rgb(0x000000));
 }
 
@@ -299,17 +305,20 @@ void draw_mark(gfx::DrawList &list, float cx, float cy, float scale, Color body,
 {
     const float s = scale;
     list.rounded_rect({cx - 20 * s, cy - 15 * s, 32 * s, 24 * s}, 9 * s, body);
-    const float tail[] = {cx - 16 * s, cy + 6 * s, cx - 19 * s, cy + 15 * s, cx - 8 * s, cy + 9 * s};
+    const float tail[] = {cx - 16 * s, cy + 6 * s, cx - 19 * s,
+                          cy + 15 * s, cx - 8 * s, cy + 9 * s};
     list.polygon(tail, 3, body);
     for (float dx : {-12.0f, -4.0f, 4.0f})
         list.circle(cx + dx * s, cy - 3 * s, 2.6f * s, accent);
     list.arc(cx + 12 * s, cy - 3 * s, 7 * s, 2.6f * s, -0.75f, 1.5f, body);
-    list.arc(cx + 12 * s, cy - 3 * s, 12 * s, 2.6f * s, -0.75f, 1.5f, body.with_alpha(body.a * 0.6f));
+    list.arc(cx + 12 * s, cy - 3 * s, 12 * s, 2.6f * s, -0.75f, 1.5f,
+             body.with_alpha(body.a * 0.6f));
 }
 
 void draw_focus_ring(gfx::DrawList &list, const Rect &r, float radius)
 {
-    list.bordered_rect({r.x - 4, r.y - 4, r.w + 8, r.h + 8}, radius + 4, palette::clear, 3, palette::white);
+    list.bordered_rect({r.x - 4, r.y - 4, r.w + 8, r.h + 8}, radius + 4, palette::clear, 3,
+                       palette::white);
 }
 
 // A microphone, struck through in red when muted.
@@ -320,7 +329,8 @@ void draw_mic(gfx::DrawList &list, float cx, float cy, float s, Color color, boo
     list.line(cx, cy + s * 0.33f, cx, cy + s * 0.5f, s * 0.09f, color);
     list.line(cx - s * 0.2f, cy + s * 0.5f, cx + s * 0.2f, cy + s * 0.5f, s * 0.09f, color);
     if (muted)
-        list.line(cx - s * 0.45f, cy - s * 0.5f, cx + s * 0.45f, cy + s * 0.55f, s * 0.11f, palette::red);
+        list.line(cx - s * 0.45f, cy - s * 0.5f, cx + s * 0.45f, cy + s * 0.55f, s * 0.11f,
+                  palette::red);
 }
 
 // The red "leave call" button's handset.
@@ -334,19 +344,22 @@ void draw_hang_up(gfx::DrawList &list, float cx, float cy, float s, Color color)
 // Call tiles take a soft colour per person, as Discord does without video.
 Color tile_color(const std::string &key)
 {
-    static const std::uint32_t kTiles[] = {0xc9d6ff, 0x5b8def, 0xff7aa2, 0xf6e3b4, 0xffb067, 0x9be3c3, 0xc3a6ff};
+    static const std::uint32_t kTiles[] = {0xc9d6ff, 0x5b8def, 0xff7aa2, 0xf6e3b4,
+                                           0xffb067, 0x9be3c3, 0xc3a6ff};
     return Color::rgb(kTiles[std::hash<std::string>{}(key) % (sizeof(kTiles) / sizeof(kTiles[0]))]);
 }
 
 // A red count bubble, as on server icons and channels with mentions.
-void draw_badge(gfx::DrawList &list, const ui::Fonts &fonts, float right, float cy, int count, Color ring)
+void draw_badge(gfx::DrawList &list, const ui::Fonts &fonts, float right, float cy, int count,
+                Color ring)
 {
     const std::string text = count > 99 ? "99+" : std::to_string(count);
     const float w = std::max(24.0f, fonts.semibold.measure(text, 18) + 14);
     if (ring.a > 0.0f)
         list.rounded_rect({right - w - 6, cy - 18, w + 12, 36}, 18, ring);
     list.rounded_rect({right - w, cy - 12, w, 24}, 12, palette::red);
-    ui::text(list, fonts.semibold, text, right - w * 0.5f, cy + 6.5f, 18, palette::white, gfx::Align::center);
+    ui::text(list, fonts.semibold, text, right - w * 0.5f, cy + 6.5f, 18, palette::white,
+             gfx::Align::center);
 }
 
 // ---- the screen -----------------------------------------------------------
@@ -372,8 +385,13 @@ class Discord final : public app::Concept
     const app::ConceptInfo &info() const override
     {
         static const app::ConceptInfo kInfo{
-            "discord", "PSCord", "Servers, channels and messages", "src/concepts/discord.cpp",
-            audio::SoundSet::glass, palette::blurple, kTechniques,
+            "discord",
+            "PSCord",
+            "Servers, channels and messages",
+            "src/concepts/discord.cpp",
+            audio::SoundSet::glass,
+            palette::blurple,
+            kTechniques,
         };
         return kInfo;
     }
@@ -446,7 +464,8 @@ class Discord final : public app::Concept
         update::Updater &updater = update::Updater::instance();
         if (updater.blocking())
         {
-            if (updater.status().phase == update::Phase::failed && input.is_pressed(Action::confirm))
+            if (updater.status().phase == update::Phase::failed &&
+                input.is_pressed(Action::confirm))
             {
                 updater.retry();
                 feedback.play(audio::Cue::select);
@@ -566,8 +585,9 @@ class Discord final : public app::Concept
     const std::vector<dc::Channel> &channels() const
     {
         static const std::vector<dc::Channel> kNone;
-        return guild_ < static_cast<int>(snap_.guilds.size()) ? snap_.guilds[static_cast<std::size_t>(guild_)].channels
-                                                              : kNone;
+        return guild_ < static_cast<int>(snap_.guilds.size())
+                   ? snap_.guilds[static_cast<std::size_t>(guild_)].channels
+                   : kNone;
     }
 
     int first_channel() const
@@ -617,13 +637,16 @@ class Discord final : public app::Concept
         {
             const int step = input.nav == Direction::up ? -1 : 1;
             if (column_ == Column::guilds)
-                select_guild(std::clamp(guild_ + step, 0, std::max(0, static_cast<int>(snap_.guilds.size()) - 1)));
+                select_guild(std::clamp(guild_ + step, 0,
+                                        std::max(0, static_cast<int>(snap_.guilds.size()) - 1)));
             else if (column_ == Column::channels)
                 step_channel(step);
             else if (in_post_list())
-                post_ = std::clamp(post_ + step, 0, std::max(0, static_cast<int>(posts().size()) - 1));
+                post_ =
+                    std::clamp(post_ + step, 0, std::max(0, static_cast<int>(posts().size()) - 1));
             else
-                scroll_ = std::clamp(scroll_ - step, 0, std::max(0, static_cast<int>(snap_.messages.size()) - 1));
+                scroll_ = std::clamp(scroll_ - step, 0,
+                                     std::max(0, static_cast<int>(snap_.messages.size()) - 1));
             feedback.play(audio::Cue::focus);
         }
 
@@ -632,9 +655,11 @@ class Discord final : public app::Concept
             const auto &list = channels();
             if (column_ == Column::guilds)
                 column_ = Column::channels;
-            else if (column_ == Column::messages && in_post_list() && post_ < static_cast<int>(posts().size()))
+            else if (column_ == Column::messages && in_post_list() &&
+                     post_ < static_cast<int>(posts().size()))
             {
-                dc::Client::instance().open_post(snap_.channel_id, posts()[static_cast<std::size_t>(post_)].id);
+                dc::Client::instance().open_post(snap_.channel_id,
+                                                 posts()[static_cast<std::size_t>(post_)].id);
                 scroll_ = 0;
             }
             else if (column_ == Column::channels && channel_ < static_cast<int>(list.size()) &&
@@ -643,7 +668,8 @@ class Discord final : public app::Concept
                 const dc::Channel &picked = list[static_cast<std::size_t>(channel_)];
                 if (is_voice(picked))
                 {
-                    dc::Client::instance().join_voice(snap_.guilds[static_cast<std::size_t>(guild_)].id, picked.id);
+                    dc::Client::instance().join_voice(
+                        snap_.guilds[static_cast<std::size_t>(guild_)].id, picked.id);
                     call_view_ = true;
                 }
                 else
@@ -705,7 +731,8 @@ class Discord final : public app::Concept
                 invite_focus_ = 1 - invite_focus_;
                 feedback.play(audio::Cue::focus);
             }
-            else if (input.is_pressed(Action::back) || (input.is_pressed(Action::confirm) && invite_focus_ == 1))
+            else if (input.is_pressed(Action::back) ||
+                     (input.is_pressed(Action::confirm) && invite_focus_ == 1))
             {
                 client.dismiss_invite();
                 feedback.play(audio::Cue::back);
@@ -738,10 +765,11 @@ class Discord final : public app::Concept
 
         const float cx = card.x + card.w * 0.5f;
         draw_avatar(over, invite.icon_url, cx, card.y + 88, 48, invite.code, invite.guild_name);
-        ui::text(over, fonts.regular, T("PSCord topluluğuna davet edildin"), cx, card.y + 176, 20, palette::muted,
-                 gfx::Align::center);
+        ui::text(over, fonts.regular, T("PSCord topluluğuna davet edildin"), cx, card.y + 176, 20,
+                 palette::muted, gfx::Align::center);
         const float name_w = std::min(520.0f, fonts.semibold.measure(invite.guild_name, 30));
-        label(over, fonts.semibold, invite.guild_name, cx - name_w * 0.5f, card.y + 218, 30, palette::header, 520);
+        label(over, fonts.semibold, invite.guild_name, cx - name_w * 0.5f, card.y + 218, 30,
+              palette::header, 520);
         const std::string online = T("%s Çevrimiçi", std::to_string(invite.online));
         const std::string members = T("%s Üye", std::to_string(invite.members));
         const float online_w = fonts.regular.measure(online, 20);
@@ -755,11 +783,11 @@ class Discord final : public app::Concept
 
         if (failed)
         {
-            ui::text(over, fonts.regular, T("Buradan katılamadık. Telefonunla okutup katıl:"), cx, card.y + 314, 20,
-                     palette::normal, gfx::Align::center);
+            ui::text(over, fonts.regular, T("Buradan katılamadık. Telefonunla okutup katıl:"), cx,
+                     card.y + 314, 20, palette::normal, gfx::Align::center);
             draw_qr(over, invite_qr_, invite_qr_size_, {cx - 120, card.y + 340, 240, 240}, 16);
-            ui::text(over, fonts.semibold, "discord.gg/" + invite.code, cx, card.y + 616, 22, palette::header,
-                     gfx::Align::center);
+            ui::text(over, fonts.semibold, "discord.gg/" + invite.code, cx, card.y + 616, 22,
+                     palette::header, gfx::Align::center);
             return;
         }
 
@@ -768,11 +796,14 @@ class Discord final : public app::Concept
         const bool busy = invite.join == dc::Invite::Join::joining;
         const bool joined = invite.join == dc::Invite::Join::joined;
         over.rounded_rect(join, 6, joined ? palette::green : palette::blurple);
-        ui::text(over, fonts.semibold, joined ? T("Katıldın!") : busy ? T("Katılınıyor...") : T("Sunucuya Katıl"),
+        ui::text(over, fonts.semibold,
+                 joined ? T("Katıldın!")
+                 : busy ? T("Katılınıyor...")
+                        : T("Sunucuya Katıl"),
                  join.x + join.w * 0.5f, join.y + 36, 22, palette::white, gfx::Align::center);
         if (!joined)
-            ui::text(over, fonts.regular, T("Daha Sonra"), later.x + later.w * 0.5f, later.y + 29, 20,
-                     invite_focus_ == 1 ? palette::header : palette::muted, gfx::Align::center);
+            ui::text(over, fonts.regular, T("Daha Sonra"), later.x + later.w * 0.5f, later.y + 29,
+                     20, invite_focus_ == 1 ? palette::header : palette::muted, gfx::Align::center);
         if (!busy)
             draw_focus_ring(over, invite_focus_ == 0 || joined ? join : later, 6);
     }
@@ -784,19 +815,20 @@ class Discord final : public app::Concept
         const Rect card{960 - 330, 540 - 135, 660, 270};
         over.shadow(card, 12, 48, Color::rgb(0x000000, 0.4f));
         over.rounded_rect(card, 12, palette::chat);
-        ui::text(over, fonts.semibold, T("Çıkış Yap"), card.x + 36, card.y + 66, 30, palette::header);
-        ui::text(over, fonts.regular, T("Çıkış yapmak istediğine emin misin?"), card.x + 36, card.y + 116, 24,
-                 palette::normal);
+        ui::text(over, fonts.semibold, T("Çıkış Yap"), card.x + 36, card.y + 66, 30,
+                 palette::header);
+        ui::text(over, fonts.regular, T("Çıkış yapmak istediğine emin misin?"), card.x + 36,
+                 card.y + 116, 24, palette::normal);
         over.rounded_rect({card.x, card.y + card.h - 96, card.w, 96}, 12, palette::sidebar);
         over.rounded_rect({card.x, card.y + card.h - 96, card.w, 24}, 0, palette::sidebar);
         const Rect quit{card.x + card.w - 36 - 180, card.y + card.h - 72, 180, 54};
         const Rect cancel{quit.x - 24 - 150, quit.y, 150, 54};
         over.rounded_rect(cancel, 6, logout_focus_ == 0 ? palette::selected : palette::sidebar);
-        ui::text(over, fonts.semibold, T("İptal"), cancel.x + cancel.w * 0.5f, cancel.y + 35, 22, palette::header,
-                 gfx::Align::center);
+        ui::text(over, fonts.semibold, T("İptal"), cancel.x + cancel.w * 0.5f, cancel.y + 35, 22,
+                 palette::header, gfx::Align::center);
         over.rounded_rect(quit, 6, palette::red);
-        ui::text(over, fonts.semibold, T("Çıkış Yap"), quit.x + quit.w * 0.5f, quit.y + 35, 22, palette::white,
-                 gfx::Align::center);
+        ui::text(over, fonts.semibold, T("Çıkış Yap"), quit.x + quit.w * 0.5f, quit.y + 35, 22,
+                 palette::white, gfx::Align::center);
         draw_focus_ring(over, logout_focus_ == 0 ? cancel : quit, 6);
     }
 
@@ -829,7 +861,8 @@ class Discord final : public app::Concept
         if (snap_.invite.code != invite_code_)
         {
             invite_code_ = snap_.invite.code;
-            invite_qr_ = encode_qr(invite_code_.empty() ? "" : "https://discord.gg/" + invite_code_, invite_qr_size_);
+            invite_qr_ = encode_qr(invite_code_.empty() ? "" : "https://discord.gg/" + invite_code_,
+                                   invite_qr_size_);
             invite_focus_ = 0;
         }
         if (snap_.channel_id != rich_channel_)
@@ -841,7 +874,8 @@ class Discord final : public app::Concept
             guild_ = 0;
         post_ = std::clamp(post_, 0, std::max(0, static_cast<int>(posts().size()) - 1));
         const int count = static_cast<int>(channels().size());
-        if (channel_ >= count || (count > 0 && channels()[static_cast<std::size_t>(channel_)].type == 4))
+        if (channel_ >= count ||
+            (count > 0 && channels()[static_cast<std::size_t>(channel_)].type == 4))
             channel_ = first_channel();
         scroll_ = std::min(scroll_, std::max(0, static_cast<int>(snap_.messages.size()) - 1));
     }
@@ -962,8 +996,10 @@ class Discord final : public app::Concept
             const dc::VoiceUser &u = people[static_cast<std::size_t>(i)];
             const int row = i / cols;
             const int in_row = std::min(cols, static_cast<int>(people.size()) - row * cols);
-            const float row_w = tile_w * static_cast<float>(in_row) + gap * static_cast<float>(in_row - 1);
-            const Rect tile{area_x + (area_w - row_w) * 0.5f + static_cast<float>(i % cols) * (tile_w + gap),
+            const float row_w =
+                tile_w * static_cast<float>(in_row) + gap * static_cast<float>(in_row - 1);
+            const Rect tile{area_x + (area_w - row_w) * 0.5f +
+                                static_cast<float>(i % cols) * (tile_w + gap),
                             top + static_cast<float>(row) * (tile_h + gap), tile_w, tile_h};
             const bool talking = status.speaking.count(u.id) > 0;
             const bool me = u.id == snap_.me_id;
@@ -973,11 +1009,14 @@ class Discord final : public app::Concept
             if (talking)
                 list.bordered_rect(tile, 12, palette::clear, 4, palette::green);
             const float radius = std::min(80.0f, tile_h * 0.2f);
-            draw_avatar(list, u.avatar_url, tile.x + tile.w * 0.5f, tile.y + tile.h * 0.5f, radius, u.id, name);
+            draw_avatar(list, u.avatar_url, tile.x + tile.w * 0.5f, tile.y + tile.h * 0.5f, radius,
+                        u.id, name);
 
             const float pill_w = std::min(tile.w - 24, fonts.semibold.measure(name, 20) + 24);
-            list.rounded_rect({tile.x + 12, tile.y + tile.h - 48, pill_w, 36}, 8, Color::rgb(0x000000, 0.45f));
-            label(list, fonts.semibold, name, tile.x + 24, tile.y + tile.h - 23, 20, palette::white, pill_w - 24);
+            list.rounded_rect({tile.x + 12, tile.y + tile.h - 48, pill_w, 36}, 8,
+                              Color::rgb(0x000000, 0.45f));
+            label(list, fonts.semibold, name, tile.x + 24, tile.y + tile.h - 23, 20, palette::white,
+                  pill_w - 24);
             if (muted || u.deafened)
             {
                 const float cx = tile.x + tile.w - 34;
@@ -991,16 +1030,19 @@ class Discord final : public app::Concept
         const float cy = 1080 - 84;
         if (status.phase != voice::Phase::connected || !status.mic_error.empty())
         {
-            const std::string note = status.phase != voice::Phase::connected ? status.text : status.mic_error;
-            ui::text(list, fonts.regular, note, cx, cy - 64, 20, palette::muted, gfx::Align::center);
+            const std::string note =
+                status.phase != voice::Phase::connected ? status.text : status.mic_error;
+            ui::text(list, fonts.regular, note, cx, cy - 64, 20, palette::muted,
+                     gfx::Align::center);
         }
         list.circle(cx - 56, cy, 36, snap_.voice_muted ? palette::white : Color::rgb(0x2b2d31));
-        draw_mic(list, cx - 56, cy, 30, snap_.voice_muted ? Color::rgb(0x2b2d31) : palette::white, snap_.voice_muted);
+        draw_mic(list, cx - 56, cy, 30, snap_.voice_muted ? Color::rgb(0x2b2d31) : palette::white,
+                 snap_.voice_muted);
         list.circle(cx + 56, cy, 36, palette::red);
         draw_hang_up(list, cx + 56, cy + 2, 34, palette::white);
         const ui::GlyphStyle glyphs = ui::GlyphStyle::dark();
-        ui::draw_button(list, fonts, glyphs, ui::Button::r2, cx - 56 - ui::button_width(ui::Button::r2, 24) * 0.5f,
-                        cy + 58, 24);
+        ui::draw_button(list, fonts, glyphs, ui::Button::r2,
+                        cx - 56 - ui::button_width(ui::Button::r2, 24) * 0.5f, cy + 58, 24);
         ui::draw_button(list, fonts, glyphs, ui::Button::triangle,
                         cx + 56 - ui::button_width(ui::Button::triangle, 24) * 0.5f, cy + 58, 24);
     }
@@ -1012,16 +1054,19 @@ class Discord final : public app::Concept
 
     // ---- rich text cache ----------------------------------------------------
 
-    const RichText &rich(const std::string &key, const std::string &markdown, float width, float base, Color color,
-                         const dc::Message *message, bool edited = false) const
+    const RichText &rich(const std::string &key, const std::string &markdown, float width,
+                         float base, Color color, const dc::Message *message,
+                         bool edited = false) const
     {
-        const std::string full = key + "|" + std::to_string(std::hash<std::string>{}(markdown)) + "|" +
-                                 std::to_string(static_cast<int>(width)) + (edited ? "e" : "");
+        const std::string full = key + "|" + std::to_string(std::hash<std::string>{}(markdown)) +
+                                 "|" + std::to_string(static_cast<int>(width)) +
+                                 (edited ? "e" : "");
         auto it = rich_.find(full);
         if (it != rich_.end())
             return it->second;
         dc::md::Names names;
-        names.user = [&](const std::string &id) -> std::string {
+        names.user = [&](const std::string &id) -> std::string
+        {
             if (message)
                 for (const dc::Mention &m : message->mentions)
                     if (m.id == id)
@@ -1031,14 +1076,16 @@ class Discord final : public app::Concept
                     return m.label;
             return {};
         };
-        names.channel = [&](const std::string &id) -> std::string {
+        names.channel = [&](const std::string &id) -> std::string
+        {
             for (const dc::Guild &g : snap_.guilds)
                 for (const dc::Channel &c : g.channels)
                     if (c.id == id)
                         return c.name;
             return {};
         };
-        names.role = [&](const std::string &id) -> std::string {
+        names.role = [&](const std::string &id) -> std::string
+        {
             if (const dc::Guild *g = open_guild())
                 for (const dc::Role &r : g->roles)
                     if (r.id == id)
@@ -1052,7 +1099,8 @@ class Discord final : public app::Concept
                 blocks.emplace_back();
             blocks.back().spans.push_back({T(" (düzenlendi)"), discord::kEdited, {}, 9999});
         }
-        return rich_.emplace(full, discord::layout_rich(blocks, context_.fonts, width, base, color)).first->second;
+        return rich_.emplace(full, discord::layout_rich(blocks, context_.fonts, width, base, color))
+            .first->second;
     }
 
     // ---- small pieces that need the picture cache ---------------------------
@@ -1063,19 +1111,21 @@ class Discord final : public app::Concept
         const int px = radius > 20 ? 128 : 64;
         if (const std::uint32_t tex = images_.get(url, px, px, clock_))
         {
-            list.image(tex, {cx - radius, cy - radius, radius * 2, radius * 2}, gfx::kFullUv, palette::white, radius);
+            list.image(tex, {cx - radius, cy - radius, radius * 2, radius * 2}, gfx::kFullUv,
+                       palette::white, radius);
             return;
         }
         list.circle(cx, cy, radius, avatar_color(key));
         const float size = radius * 0.9f;
-        ui::text(list, context_.fonts.semibold, first_letter(name), cx, cy + size * 0.36f, size, palette::white,
-                 gfx::Align::center);
+        ui::text(list, context_.fonts.semibold, first_letter(name), cx, cy + size * 0.36f, size,
+                 palette::white, gfx::Align::center);
     }
 
-    float label(gfx::DrawList &list, const ui::FontRef &font, const std::string &text, float x, float baseline,
-                float size, Color color, float max_w) const
+    float label(gfx::DrawList &list, const ui::FontRef &font, const std::string &text, float x,
+                float baseline, float size, Color color, float max_w) const
     {
-        return discord::draw_label(list, context_.fonts, font, text, x, baseline, size, color, max_w, images_, clock_);
+        return discord::draw_label(list, context_.fonts, font, text, x, baseline, size, color,
+                                   max_w, images_, clock_);
     }
 
     // A picture from a message: rounded, grey until it arrives, a play button on videos.
@@ -1120,26 +1170,31 @@ class Discord final : public app::Concept
         const float left = card.x + 48;
         const float left_w = 640;
         const float mid = left + left_w * 0.5f;
-        ui::text(list, fonts.semibold, T("Tekrar hoş geldin!"), mid, card.y + 96, 36, palette::header, gfx::Align::center);
-        ui::text(list, fonts.regular, T("Seni tekrar gördüğümüze çok sevindik!"), mid, card.y + 140, 24, palette::interactive,
-                 gfx::Align::center);
+        ui::text(list, fonts.semibold, T("Tekrar hoş geldin!"), mid, card.y + 96, 36,
+                 palette::header, gfx::Align::center);
+        ui::text(list, fonts.regular, T("Seni tekrar gördüğümüze çok sevindik!"), mid, card.y + 140,
+                 24, palette::interactive, gfx::Align::center);
 
         float y = card.y + 212;
-        ui::text(list, fonts.semibold, T("BİLGİSAYARDAN GİRİŞ YAP"), left, y, 18, palette::interactive);
+        ui::text(list, fonts.semibold, T("BİLGİSAYARDAN GİRİŞ YAP"), left, y, 18,
+                 palette::interactive);
         const Rect field{left, y + 16, left_w, 72};
         list.rounded_rect(field, 6, palette::rail);
         if (!snap_.web_url.empty())
         {
-            ui::text(list, fonts.semibold, snap_.web_url, field.x + 24, field.y + 48, 32, palette::header);
+            ui::text(list, fonts.semibold, snap_.web_url, field.x + 24, field.y + 48, 32,
+                     palette::header);
             y = field.y + field.h + 44;
-            ui::text(list, fonts.regular, T("Aynı ağdaki bir bilgisayarda bu adresi tarayıcıya yaz,"), left, y, 22,
+            ui::text(list, fonts.regular,
+                     T("Aynı ağdaki bir bilgisayarda bu adresi tarayıcıya yaz,"), left, y, 22,
                      palette::interactive);
-            ui::text(list, fonts.regular, T("açılan sayfada e-posta ve şifrenle giriş yap."), left, y + 32, 22,
-                     palette::interactive);
+            ui::text(list, fonts.regular, T("açılan sayfada e-posta ve şifrenle giriş yap."), left,
+                     y + 32, 22, palette::interactive);
         }
         else
         {
-            const std::string why = snap_.web_error.empty() ? T("Hazırlanıyor...") : snap_.web_error;
+            const std::string why =
+                snap_.web_error.empty() ? T("Hazırlanıyor...") : snap_.web_error;
             label(list, fonts.regular, why, field.x + 24, field.y + 46, 24,
                   snap_.web_error.empty() ? palette::muted : palette::red, left_w - 48);
             y = field.y + field.h + 44;
@@ -1149,8 +1204,8 @@ class Discord final : public app::Concept
         if (!snap_.pending_user.empty())
         {
             list.rounded_rect({left, y - 40, left_w, 64}, 6, palette::blurple);
-            ui::text(list, fonts.semibold, T("%s olarak giriş yapılıyor", snap_.pending_user), mid, y + 2, 24,
-                     palette::white, gfx::Align::center);
+            ui::text(list, fonts.semibold, T("%s olarak giriş yapılıyor", snap_.pending_user), mid,
+                     y + 2, 24, palette::white, gfx::Align::center);
         }
         else if (!snap_.status.empty())
         {
@@ -1164,21 +1219,24 @@ class Discord final : public app::Concept
         if (qr_size_ > 0)
         {
             draw_qr(list, qr_, qr_size_, box, 20);
-            list.rounded_rect({box.x + side * 0.5f - 36, box.y + side * 0.5f - 36, 72, 72}, 16, palette::white);
-            list.rounded_rect({box.x + side * 0.5f - 30, box.y + side * 0.5f - 30, 60, 60}, 14, palette::blurple);
-            draw_mark(list, box.x + side * 0.5f, box.y + side * 0.5f + 2, 0.9f, palette::white, palette::blurple);
+            list.rounded_rect({box.x + side * 0.5f - 36, box.y + side * 0.5f - 36, 72, 72}, 16,
+                              palette::white);
+            list.rounded_rect({box.x + side * 0.5f - 30, box.y + side * 0.5f - 30, 60, 60}, 14,
+                              palette::blurple);
+            draw_mark(list, box.x + side * 0.5f, box.y + side * 0.5f + 2, 0.9f, palette::white,
+                      palette::blurple);
         }
         else
         {
-            ui::text(list, fonts.regular, T("Hazırlanıyor..."), right_mid, box.y + side * 0.5f + 8, 22, palette::muted,
-                     gfx::Align::center);
+            ui::text(list, fonts.regular, T("Hazırlanıyor..."), right_mid, box.y + side * 0.5f + 8,
+                     22, palette::muted, gfx::Align::center);
         }
-        ui::text(list, fonts.semibold, T("QR Kodu ile Giriş Yap"), right_mid, box.y + side + 64, 30, palette::header,
-                 gfx::Align::center);
-        ui::text(list, fonts.regular, T("Anında giriş yapmak için Discord"), right_mid, box.y + side + 108, 22,
-                 palette::interactive, gfx::Align::center);
-        ui::text(list, fonts.regular, T("mobil uygulamasıyla tara."), right_mid, box.y + side + 140, 22,
-                 palette::interactive, gfx::Align::center);
+        ui::text(list, fonts.semibold, T("QR Kodu ile Giriş Yap"), right_mid, box.y + side + 64, 30,
+                 palette::header, gfx::Align::center);
+        ui::text(list, fonts.regular, T("Anında giriş yapmak için Discord"), right_mid,
+                 box.y + side + 108, 22, palette::interactive, gfx::Align::center);
+        ui::text(list, fonts.regular, T("mobil uygulamasıyla tara."), right_mid, box.y + side + 140,
+                 22, palette::interactive, gfx::Align::center);
     }
 
     void draw_loading(gfx::DrawList &list) const
@@ -1187,8 +1245,10 @@ class Discord final : public app::Concept
         list.rounded_rect({0, 0, 1920, 1080}, 0, palette::chat);
         const float bob = std::sin(clock_ * 3.0f) * 8.0f;
         draw_mark(list, 960, 470 + bob, 3.0f, palette::blurple, palette::chat);
-        const std::string status = snap_.status.empty() ? std::string(T("Bağlanılıyor...")) : snap_.status;
-        ui::text(list, fonts.semibold, T("BİLİYOR MUYDUN"), 960, 600, 18, palette::muted, gfx::Align::center);
+        const std::string status =
+            snap_.status.empty() ? std::string(T("Bağlanılıyor...")) : snap_.status;
+        ui::text(list, fonts.semibold, T("BİLİYOR MUYDUN"), 960, 600, 18, palette::muted,
+                 gfx::Align::center);
         ui::text(list, fonts.regular, status, 960, 644, 26, palette::normal, gfx::Align::center);
         const ui::Hint hints[] = {
             {ui::Button::cross, T("Yeniden Dene")},
@@ -1223,7 +1283,8 @@ class Discord final : public app::Concept
             title = T("PSCord %s indiriliyor", status.version);
             if (status.total > 0)
             {
-                progress = std::min(1.0f, static_cast<float>(status.received) / static_cast<float>(status.total));
+                progress = std::min(1.0f, static_cast<float>(status.received) /
+                                              static_cast<float>(status.total));
                 char text[64];
                 std::snprintf(text, sizeof(text), "%.1f / %.1f MB", status.received / 1048576.0,
                               status.total / 1048576.0);
@@ -1255,16 +1316,26 @@ class Discord final : public app::Concept
         if (!detail.empty())
             ui::text(over, fonts.regular, detail, 960, 640, 24, palette::muted, gfx::Align::center);
         if (!status.notes.empty() && status.phase != update::Phase::failed)
-            ui::text(over, fonts.regular, status.notes, 960, 700, 22, palette::normal, gfx::Align::center);
+            ui::text(over, fonts.regular, status.notes, 960, 700, 22, palette::normal,
+                     gfx::Align::center);
     }
 
     // ---- settings -------------------------------------------------------------
 
-    enum class Section { account, language, sound, about, logout, count };
+    enum class Section
+    {
+        account,
+        language,
+        sound,
+        about,
+        logout,
+        count
+    };
 
     static const char *section_name(Section section)
     {
-        constexpr const char *kNames[] = {"Hesabım", "Dil", "Ses ve Kontroller", "Hakkında", "Çıkış Yap"};
+        constexpr const char *kNames[] = {"Hesabım", "Dil", "Ses ve Kontroller", "Hakkında",
+                                          "Çıkış Yap"};
         return T(kNames[static_cast<int>(section)]);
     }
 
@@ -1293,12 +1364,15 @@ class Discord final : public app::Concept
         }
         else if (row == 0)
         {
-            const int volume = step == 0 ? (settings.ui_volume > 0 ? 0 : 7) : settings.ui_volume + step;
+            const int volume =
+                step == 0 ? (settings.ui_volume > 0 ? 0 : 7) : settings.ui_volume + step;
             settings.ui_volume = std::clamp(volume, 0, 10);
         }
         else
         {
-            bool &flag = row == 1 ? settings.haptics : row == 2 ? settings.light_bar : settings.swap_confirm;
+            bool &flag = row == 1   ? settings.haptics
+                         : row == 2 ? settings.light_bar
+                                    : settings.swap_confirm;
             flag = !flag;
         }
         context_.settings_changed = true;
@@ -1314,7 +1388,8 @@ class Discord final : public app::Concept
             const int count = static_cast<int>(Section::count);
             if (input.nav == Direction::up || input.nav == Direction::down)
             {
-                settings_section_ = (settings_section_ + (input.nav == Direction::down ? 1 : count - 1)) % count;
+                settings_section_ =
+                    (settings_section_ + (input.nav == Direction::down ? 1 : count - 1)) % count;
                 feedback.play(audio::Cue::focus);
             }
             else if (input.is_pressed(Action::back) || input.is_pressed(Action::menu))
@@ -1351,7 +1426,8 @@ class Discord final : public app::Concept
             feedback.play(audio::Cue::modal_close);
         }
         else if (input.is_pressed(Action::back) ||
-                 (input.nav == Direction::left && (section != Section::sound || settings_row_ != 0)))
+                 (input.nav == Direction::left &&
+                  (section != Section::sound || settings_row_ != 0)))
         {
             settings_content_ = false;
             feedback.play(audio::Cue::back);
@@ -1369,9 +1445,11 @@ class Discord final : public app::Concept
             }
             change_setting(settings_row_, 0, feedback);
         }
-        else if (section == Section::sound && (input.nav == Direction::left || input.nav == Direction::right))
+        else if (section == Section::sound &&
+                 (input.nav == Direction::left || input.nav == Direction::right))
         {
-            change_setting(settings_row_, settings_row_ == 0 ? (input.nav == Direction::right ? 1 : -1) : 0,
+            change_setting(settings_row_,
+                           settings_row_ == 0 ? (input.nav == Direction::right ? 1 : -1) : 0,
                            feedback);
         }
     }
@@ -1408,7 +1486,9 @@ class Discord final : public app::Concept
             if (selected)
                 over.rounded_rect(row, 6, palette::selected);
             ui::text(over, fonts.semibold, section_name(section), row.x + 12, row.y + 29, 20,
-                     section == Section::logout ? palette::red : selected ? palette::header : palette::muted);
+                     section == Section::logout ? palette::red
+                     : selected                 ? palette::header
+                                                : palette::muted);
             if (selected)
                 focused = row;
             y += 50;
@@ -1453,17 +1533,22 @@ class Discord final : public app::Concept
             over.rounded_rect({card.x, card.y, card.w, 110}, 12, palette::blurple);
             over.rounded_rect({card.x, card.y + 98, card.w, 12}, 0, palette::rail);
             over.circle(card.x + 90, card.y + 120, 62, palette::rail);
-            draw_avatar(over, snap_.me_avatar, card.x + 90, card.y + 120, 54, snap_.me_id, snap_.me);
-            label(over, fonts.semibold, snap_.me, card.x + 170, card.y + 158, 28, palette::header, w - 200);
+            draw_avatar(over, snap_.me_avatar, card.x + 90, card.y + 120, 54, snap_.me_id,
+                        snap_.me);
+            label(over, fonts.semibold, snap_.me, card.x + 170, card.y + 158, 28, palette::header,
+                  w - 200);
             const Rect field{card.x + 24, card.y + 196, card.w - 48, 80};
             over.rounded_rect(field, 8, palette::sidebar);
-            ui::text(over, fonts.semibold, T("KULLANICI ADI"), field.x + 20, field.y + 30, 15, palette::muted);
-            label(over, fonts.regular, snap_.me, field.x + 20, field.y + 62, 22, palette::header, field.w - 40);
+            ui::text(over, fonts.semibold, T("KULLANICI ADI"), field.x + 20, field.y + 30, 15,
+                     palette::muted);
+            label(over, fonts.regular, snap_.me, field.x + 20, field.y + 62, 22, palette::header,
+                  field.w - 40);
             break;
         }
         case Section::language:
         {
-            ui::text(over, fonts.regular, T("Uygulamanın dilini seç."), x, y + 10, 20, palette::muted);
+            ui::text(over, fonts.regular, T("Uygulamanın dilini seç."), x, y + 10, 20,
+                     palette::muted);
             y += 40;
             for (int i = 0; i < i18n::kLangCount; ++i)
             {
@@ -1471,9 +1556,10 @@ class Discord final : public app::Concept
                 const bool chosen = settings.language == i;
                 over.rounded_rect(row, 8, chosen ? palette::selected : palette::sidebar);
                 over.circle(row.x + 36, row.y + 32, 12, chosen ? palette::white : palette::muted);
-                over.circle(row.x + 36, row.y + 32, chosen ? 6.0f : 9.0f, chosen ? palette::blurple : palette::sidebar);
-                ui::text(over, fonts.semibold, i18n::language_name(static_cast<i18n::Lang>(i)), row.x + 68,
-                         row.y + 40, 22, palette::header);
+                over.circle(row.x + 36, row.y + 32, chosen ? 6.0f : 9.0f,
+                            chosen ? palette::blurple : palette::sidebar);
+                ui::text(over, fonts.semibold, i18n::language_name(static_cast<i18n::Lang>(i)),
+                         row.x + 68, row.y + 40, 22, palette::header);
                 if (settings_content_ && settings_row_ == i)
                     draw_focus_ring(over, row, 8);
                 y += 76;
@@ -1482,20 +1568,25 @@ class Discord final : public app::Concept
         }
         case Section::sound:
         {
-            const char *names[] = {"Arayüz sesleri", "Titreşim", "Işık çubuğu", "Onay için O, geri için X"};
-            const bool flags[] = {settings.ui_volume > 0, settings.haptics, settings.light_bar, settings.swap_confirm};
+            const char *names[] = {"Arayüz sesleri", "Titreşim", "Işık çubuğu",
+                                   "Onay için O, geri için X"};
+            const bool flags[] = {settings.ui_volume > 0, settings.haptics, settings.light_bar,
+                                  settings.swap_confirm};
             for (int i = 0; i < 4; ++i)
             {
                 const Rect row{x, y, w, 72};
-                ui::text(over, fonts.semibold, T(names[i]), row.x + 4, row.y + 44, 22, palette::header);
+                ui::text(over, fonts.semibold, T(names[i]), row.x + 4, row.y + 44, 22,
+                         palette::header);
                 if (i == 0)
                 {
                     const Rect bar{row.x + w - 260, row.y + 32, 200, 8};
                     over.rounded_rect(bar, 4, palette::rail);
-                    over.rounded_rect({bar.x, bar.y, bar.w * settings.ui_volume / 10.0f, bar.h}, 4, palette::blurple);
-                    over.circle(bar.x + bar.w * settings.ui_volume / 10.0f, bar.y + 4, 11, palette::white);
-                    ui::text(over, fonts.regular, std::to_string(settings.ui_volume * 10) + "%", row.x + w - 4,
-                             row.y + 44, 20, palette::muted, gfx::Align::right);
+                    over.rounded_rect({bar.x, bar.y, bar.w * settings.ui_volume / 10.0f, bar.h}, 4,
+                                      palette::blurple);
+                    over.circle(bar.x + bar.w * settings.ui_volume / 10.0f, bar.y + 4, 11,
+                                palette::white);
+                    ui::text(over, fonts.regular, std::to_string(settings.ui_volume * 10) + "%",
+                             row.x + w - 4, row.y + 44, 20, palette::muted, gfx::Align::right);
                 }
                 else
                 {
@@ -1516,28 +1607,34 @@ class Discord final : public app::Concept
             over.rounded_rect(card, 12, palette::sidebar);
             over.rounded_rect({card.x + 32, card.y + 40, 120, 120}, 28, palette::blurple);
             draw_mark(over, card.x + 92, card.y + 102, 2.4f, palette::white, palette::blurple);
-            ui::text(over, fonts.semibold, "PSCord", card.x + 184, card.y + 88, 32, palette::header);
-            ui::text(over, fonts.regular, std::string(T("Sürüm")) + " " + (version_.empty() ? "-" : version_),
+            ui::text(over, fonts.semibold, "PSCord", card.x + 184, card.y + 88, 32,
+                     palette::header);
+            ui::text(over, fonts.regular,
+                     std::string(T("Sürüm")) + " " + (version_.empty() ? "-" : version_),
                      card.x + 184, card.y + 126, 22, palette::normal);
-            ui::text(over, fonts.regular, T("Güncellemeler uygulama açılırken otomatik kurulur."), card.x + 184,
-                     card.y + 160, 18, palette::muted);
+            ui::text(over, fonts.regular, T("Güncellemeler uygulama açılırken otomatik kurulur."),
+                     card.x + 184, card.y + 160, 18, palette::muted);
             const Rect join{x, y + 224, w, 88};
             over.rounded_rect(join, 12, palette::sidebar);
-            ui::text(over, fonts.semibold, T("Topluluğa katıl"), join.x + 24, join.y + 36, 22, palette::header);
-            ui::text(over, fonts.regular, T("discord.gg/wfTch3qUa6"), join.x + 24, join.y + 66, 18, palette::blurple);
+            ui::text(over, fonts.semibold, T("Topluluğa katıl"), join.x + 24, join.y + 36, 22,
+                     palette::header);
+            ui::text(over, fonts.regular, T("discord.gg/wfTch3qUa6"), join.x + 24, join.y + 66, 18,
+                     palette::blurple);
             if (settings_content_ && settings_row_ == 0)
                 draw_focus_ring(over, join, 12);
             const Rect coffee{x, y + 336, w, 248};
             over.rounded_rect(coffee, 12, palette::sidebar);
-            ui::text(over, fonts.semibold, T("Bir kahve ısmarla"), coffee.x + 24, coffee.y + 48, 22, palette::header);
-            ui::text(over, fonts.regular, T("buymeacoffee.com/desstann"), coffee.x + 24, coffee.y + 84, 18,
-                     palette::blurple);
-            ui::text(over, fonts.regular, T("Beğendiysen telefonunla okut."), coffee.x + 24, coffee.y + 124, 18,
-                     palette::muted);
+            ui::text(over, fonts.semibold, T("Bir kahve ısmarla"), coffee.x + 24, coffee.y + 48, 22,
+                     palette::header);
+            ui::text(over, fonts.regular, T("buymeacoffee.com/desstann"), coffee.x + 24,
+                     coffee.y + 84, 18, palette::blurple);
+            ui::text(over, fonts.regular, T("Beğendiysen telefonunla okut."), coffee.x + 24,
+                     coffee.y + 124, 18, palette::muted);
             if (coffee_qr_.empty())
                 coffee_qr_ = encode_qr("https://buymeacoffee.com/desstann", coffee_qr_size_);
             if (coffee_qr_size_ > 0)
-                draw_qr(over, coffee_qr_, coffee_qr_size_, {coffee.x + coffee.w - 216, coffee.y + 24, 200, 200}, 14);
+                draw_qr(over, coffee_qr_, coffee_qr_size_,
+                        {coffee.x + coffee.w - 216, coffee.y + 24, 200, 200}, 14);
             if (settings_content_ && settings_row_ == 1)
                 draw_focus_ring(over, coffee, 12);
             break;
@@ -1566,7 +1663,8 @@ class Discord final : public app::Concept
     float rail_center(int index) const
     {
         const float first = layout::icon_gap + layout::icon * 0.5f;
-        return first + static_cast<float>(index) * (layout::icon + layout::icon_gap) + (index >= 1 ? 16.0f : 0.0f);
+        return first + static_cast<float>(index) * (layout::icon + layout::icon_gap) +
+               (index >= 1 ? 16.0f : 0.0f);
     }
 
     void draw_rail(gfx::DrawList &list) const
@@ -1585,7 +1683,8 @@ class Discord final : public app::Concept
                 continue;
             const dc::Guild &g = snap_.guilds[static_cast<std::size_t>(i)];
             const bool active = i == guild_;
-            const Rect icon{cx - layout::icon * 0.5f, cy - layout::icon * 0.5f, layout::icon, layout::icon};
+            const Rect icon{cx - layout::icon * 0.5f, cy - layout::icon * 0.5f, layout::icon,
+                            layout::icon};
             const float radius = active ? 24.0f : layout::icon * 0.5f;
             if (active)
                 list.rounded_rect({0, cy - 30, 6, 60}, 3, palette::white);
@@ -1595,7 +1694,7 @@ class Discord final : public app::Concept
             {
                 list.rounded_rect(icon, radius, active ? palette::blurple : palette::chat);
                 draw_mark(list, cx, cy + 2, 1.0f, active ? palette::white : palette::normal,
-                           active ? palette::blurple : palette::chat);
+                          active ? palette::blurple : palette::chat);
             }
             else if (const std::uint32_t tex = images_.get(g.icon_url, 128, 128, clock_))
             {
@@ -1612,10 +1711,11 @@ class Discord final : public app::Concept
             if (active && focused)
                 draw_focus_ring(list, icon, radius);
             if (g.mentions > 0)
-                draw_badge(list, fonts, icon.x + icon.w + 4, icon.y + icon.h - 8, g.mentions, palette::rail);
+                draw_badge(list, fonts, icon.x + icon.w + 4, icon.y + icon.h - 8, g.mentions,
+                           palette::rail);
             if (i == 0)
-                list.line(cx - 24, cy + layout::icon * 0.5f + 14, cx + 24, cy + layout::icon * 0.5f + 14, 2,
-                          palette::hover);
+                list.line(cx - 24, cy + layout::icon * 0.5f + 14, cx + 24,
+                          cy + layout::icon * 0.5f + 14, 2, palette::hover);
         }
         list.pop_clip();
     }
@@ -1631,7 +1731,8 @@ class Discord final : public app::Concept
         if (dms)
         {
             list.rounded_rect({x + 16, 15, w - 32, 42}, 6, palette::rail);
-            ui::text(list, fonts.regular, T("Sohbet bul ya da başlat"), x + 28, 43, 20, palette::muted);
+            ui::text(list, fonts.regular, T("Sohbet bul ya da başlat"), x + 28, 43, 20,
+                     palette::muted);
         }
         else
         {
@@ -1648,7 +1749,8 @@ class Discord final : public app::Concept
         const bool focused = column_ == Column::channels;
         const float top = layout::header_h + 12;
         const float bottom = 1080 - layout::panel_h - voice_panel_height() - 8;
-        auto row_height = [&](const dc::Channel &c) {
+        auto row_height = [&](const dc::Channel &c)
+        {
             if (c.type == 4)
                 return layout::category_h;
             return (dms ? layout::dm_row_h : layout::row_h) +
@@ -1675,7 +1777,8 @@ class Discord final : public app::Concept
         y = top - offset;
         if (dms)
         {
-            ui::text(list, fonts.semibold, T("DİREKT MESAJLAR"), x + 24, y + 30, 18, palette::muted);
+            ui::text(list, fonts.semibold, T("DİREKT MESAJLAR"), x + 24, y + 30, 18,
+                     palette::muted);
             y += 44;
         }
         for (int i = 0; i < static_cast<int>(items.size()); ++i)
@@ -1692,12 +1795,15 @@ class Discord final : public app::Concept
                 const float cy = y + 36;
                 list.line(x + 12, cy - 4, x + 17, cy + 1, 2, palette::muted);
                 list.line(x + 17, cy + 1, x + 22, cy - 4, 2, palette::muted);
-                label(list, fonts.semibold, upper_tr(c.name), x + 30, cy + 6, 18, palette::muted, w - 60);
+                label(list, fonts.semibold, upper_tr(c.name), x + 30, cy + 6, 18, palette::muted,
+                      w - 60);
             }
             else
             {
-                const float base = h - layout::voice_user_h * static_cast<float>(c.voice_users.size());
-                draw_channel_row(list, c, {x + 12, y + 2, w - 24, base - 4}, i == channel_ && focused);
+                const float base =
+                    h - layout::voice_user_h * static_cast<float>(c.voice_users.size());
+                draw_channel_row(list, c, {x + 12, y + 2, w - 24, base - 4},
+                                 i == channel_ && focused);
                 float uy = y + base;
                 for (const dc::VoiceUser &u : c.voice_users)
                 {
@@ -1707,8 +1813,8 @@ class Discord final : public app::Concept
                     if (talking)
                         list.ring(x + 66, cy, 17, 2.5f, palette::green);
                     draw_avatar(list, u.avatar_url, x + 66, cy, 14, u.id, name);
-                    label(list, fonts.regular, name, x + 92, cy + 7, 21, talking ? palette::header : palette::muted,
-                          w - 116);
+                    label(list, fonts.regular, name, x + 92, cy + 7, 21,
+                          talking ? palette::header : palette::muted, w - 116);
                     uy += layout::voice_user_h;
                 }
             }
@@ -1720,7 +1826,8 @@ class Discord final : public app::Concept
         draw_user_panel(list);
     }
 
-    void draw_channel_row(gfx::DrawList &list, const dc::Channel &c, const Rect &row, bool cursor) const
+    void draw_channel_row(gfx::DrawList &list, const dc::Channel &c, const Rect &row,
+                          bool cursor) const
     {
         const auto &fonts = context_.fonts;
         const bool open = c.id == snap_.channel_id;
@@ -1752,8 +1859,7 @@ class Discord final : public app::Concept
                                        bright ? palette::interactive : palette::faint);
             name_x = row.x + 48;
         }
-        label(list, fonts.semibold, c.name, name_x, baseline, 24, text,
-              right - name_x);
+        label(list, fonts.semibold, c.name, name_x, baseline, 24, text, right - name_x);
     }
 
     float voice_panel_height() const
@@ -1771,18 +1877,23 @@ class Discord final : public app::Concept
         const float w = layout::sidebar_w;
         const float y = 1080 - layout::panel_h - layout::voice_panel_h;
         list.rounded_rect({x, y, w, layout::voice_panel_h}, 0, palette::panel);
-        list.line(x + 16, y + layout::voice_panel_h - 1, x + w - 16, y + layout::voice_panel_h - 1, 2,
-                  palette::divider);
+        list.line(x + 16, y + layout::voice_panel_h - 1, x + w - 16, y + layout::voice_panel_h - 1,
+                  2, palette::divider);
 
         const bool connected = call.phase == voice::Phase::connected;
         const bool failed = call.phase == voice::Phase::failed;
-        const Color tone = connected ? palette::green : failed ? palette::red : Color::rgb(0xf0b232);
+        const Color tone = connected ? palette::green
+                           : failed  ? palette::red
+                                     : Color::rgb(0xf0b232);
         for (int bar = 0; bar < 3; ++bar)
         {
             const float bh = 8.0f + 6.0f * static_cast<float>(bar);
-            list.rounded_rect({x + 22 + 8.0f * static_cast<float>(bar), y + 44 - bh, 5, bh}, 2, tone);
+            list.rounded_rect({x + 22 + 8.0f * static_cast<float>(bar), y + 44 - bh, 5, bh}, 2,
+                              tone);
         }
-        const char *title = connected ? T("Ses Bağlandı") : failed ? T("Ses Bağlantısı Kesildi") : T("Bağlanıyor");
+        const char *title = connected ? T("Ses Bağlandı")
+                            : failed  ? T("Ses Bağlantısı Kesildi")
+                                      : T("Bağlanıyor");
         ui::text(list, fonts.semibold, title, x + 56, y + 44, 22, tone);
 
         std::string where;
@@ -1795,7 +1906,8 @@ class Discord final : public app::Concept
         const float button_w = ui::button_width(ui::Button::triangle, 28);
         const float button_x = x + w - 16 - button_w;
         label(list, fonts.regular, detail, x + 22, y + 78, 19, palette::muted, button_x - x - 40);
-        ui::draw_button(list, fonts, glyphs, ui::Button::triangle, button_x, y + layout::voice_panel_h * 0.5f, 28);
+        ui::draw_button(list, fonts, glyphs, ui::Button::triangle, button_x,
+                        y + layout::voice_panel_h * 0.5f, 28);
     }
 
     void draw_user_panel(gfx::DrawList &list) const
@@ -1813,7 +1925,8 @@ class Discord final : public app::Concept
         const ui::GlyphStyle glyphs = ui::GlyphStyle::dark();
         const float button_w = ui::button_width(ui::Button::options, 28);
         const float button_x = x + layout::sidebar_w - 16 - button_w;
-        label(list, fonts.semibold, snap_.me, x + 80, cy - 4, 22, palette::header, button_x - (x + 80) - 12);
+        label(list, fonts.semibold, snap_.me, x + 80, cy - 4, 22, palette::header,
+              button_x - (x + 80) - 12);
         ui::text(list, fonts.regular, T("Çevrim içi"), x + 80, cy + 24, 18, palette::muted);
         ui::draw_button(list, fonts, glyphs, ui::Button::options, button_x, cy, 28);
     }
@@ -1855,13 +1968,15 @@ class Discord final : public app::Concept
             x += 46;
         }
         const float limit = 1920 - 24 - hints_w - 32;
-        x += label(list, fonts.semibold, open->name, x, 45, 24, palette::header, std::min(600.0f, limit - x));
+        x += label(list, fonts.semibold, open->name, x, 45, 24, palette::header,
+                   std::min(600.0f, limit - x));
         // Inside a post the header reads "forum > post".
         if (in_post() && x + 80 < limit)
         {
             ui::text(list, fonts.regular, "›", x + 20, 45, 24, palette::muted);
             x += 44;
-            x += label(list, fonts.semibold, open_post_name(), x, 45, 24, palette::header, limit - x);
+            x += label(list, fonts.semibold, open_post_name(), x, 45, 24, palette::header,
+                       limit - x);
             return;
         }
         if (!open->topic.empty() && x + 80 < limit)
@@ -1885,9 +2000,10 @@ class Discord final : public app::Concept
         if (!open)
         {
             draw_mark(list, center, 470, 3.0f, palette::selected, palette::chat);
-            ui::text(list, fonts.semibold, T("Bir kanal seç"), center, 600, 32, palette::header, gfx::Align::center);
-            ui::text(list, fonts.regular, T("Soldan bir sunucu ve kanal seçip aç."), center, 644, 24, palette::muted,
+            ui::text(list, fonts.semibold, T("Bir kanal seç"), center, 600, 32, palette::header,
                      gfx::Align::center);
+            ui::text(list, fonts.regular, T("Soldan bir sunucu ve kanal seçip aç."), center, 644,
+                     24, palette::muted, gfx::Align::center);
             return;
         }
         if (in_post_list())
@@ -1908,14 +2024,15 @@ class Discord final : public app::Concept
         const std::vector<dc::ForumPost> &all = forum.posts;
         if (all.empty())
         {
-            const char *line = snap_.loading_posts  ? "Gönderiler yükleniyor..."
+            const char *line = snap_.loading_posts           ? "Gönderiler yükleniyor..."
                                : snap_.channel_error.empty() ? "Bu forumda henüz gönderi yok."
                                                              : nullptr;
-            discord::draw_channel_icon(list, forum.type, false, center - 48, 470, 96, palette::selected);
+            discord::draw_channel_icon(list, forum.type, false, center - 48, 470, 96,
+                                       palette::selected);
             ui::text(list, fonts.semibold, T("Forum gönderileri"), center, 600, 32, palette::header,
                      gfx::Align::center);
-            ui::text(list, fonts.regular, line ? T(line) : snap_.channel_error, center, 644, 24, palette::muted,
-                     gfx::Align::center);
+            ui::text(list, fonts.regular, line ? T(line) : snap_.channel_error, center, 644, 24,
+                     palette::muted, gfx::Align::center);
             return;
         }
 
@@ -1932,27 +2049,31 @@ class Discord final : public app::Concept
             const Rect row{x, top + (i - first) * row_h, w, row_h - 16};
             const bool focused = column_ == Column::messages && i == post_;
             list.rounded_rect(row, 10, focused ? palette::selected : palette::sidebar);
-            label(list, fonts.semibold, p.name, row.x + 24, row.y + 42, 24, palette::header, row.w - 48);
+            label(list, fonts.semibold, p.name, row.x + 24, row.y + 42, 24, palette::header,
+                  row.w - 48);
             if (!p.excerpt.empty())
             {
                 std::string line = p.excerpt;
                 std::replace(line.begin(), line.end(), '\n', ' ');
-                label(list, fonts.regular, line, row.x + 24, row.y + 78, 20, palette::normal, row.w - 48);
+                label(list, fonts.regular, line, row.x + 24, row.y + 78, 20, palette::normal,
+                      row.w - 48);
             }
             std::string foot = p.author.empty() ? std::string() : p.author;
             if (p.timestamp > 0)
                 foot += (foot.empty() ? "" : " · ") + day_label(p.timestamp);
             if (p.message_count > 0)
-                foot += (foot.empty() ? "" : " · ") + T("%s yanıt", std::to_string(p.message_count));
+                foot +=
+                    (foot.empty() ? "" : " · ") + T("%s yanıt", std::to_string(p.message_count));
             if (!foot.empty())
-                label(list, fonts.regular, foot, row.x + 24, row.y + 104, 18, palette::muted, row.w - 48);
+                label(list, fonts.regular, foot, row.x + 24, row.y + 104, 18, palette::muted,
+                      row.w - 48);
             if (focused)
                 draw_focus_ring(list, row, 10);
         }
         if (count > fits)
         {
-            ui::text(list, fonts.regular, T("%s gönderi", std::to_string(count)), right - 36, 1080 - 28, 18,
-                     palette::muted, gfx::Align::right);
+            ui::text(list, fonts.regular, T("%s gönderi", std::to_string(count)), right - 36,
+                     1080 - 28, 18, palette::muted, gfx::Align::right);
         }
     }
 
@@ -2019,15 +2140,18 @@ class Discord final : public app::Concept
             if (list)
             {
                 const Color arrow = m.type == 7 ? palette::green : palette::blurple;
-                list->line(layout::avatar_cx - 12, cy + 18, layout::avatar_cx + 10, cy + 18, 3, arrow);
-                list->line(layout::avatar_cx + 2, cy + 10, layout::avatar_cx + 10, cy + 18, 3, arrow);
-                list->line(layout::avatar_cx + 2, cy + 26, layout::avatar_cx + 10, cy + 18, 3, arrow);
+                list->line(layout::avatar_cx - 12, cy + 18, layout::avatar_cx + 10, cy + 18, 3,
+                           arrow);
+                list->line(layout::avatar_cx + 2, cy + 10, layout::avatar_cx + 10, cy + 18, 3,
+                           arrow);
+                list->line(layout::avatar_cx + 2, cy + 26, layout::avatar_cx + 10, cy + 18, 3,
+                           arrow);
                 const float name_w = label(*list, fonts.semibold, m.author, x, cy + 26, 24,
                                            discord::role_color(m.color, palette::header), width);
-                const float what_w = label(*list, fonts.regular, what, x + name_w, cy + 26, 24, palette::muted,
-                                           width - name_w);
-                ui::text(*list, fonts.regular, time_label(m.timestamp), x + name_w + what_w + 12, cy + 26, 18,
-                         palette::muted);
+                const float what_w = label(*list, fonts.regular, what, x + name_w, cy + 26, 24,
+                                           palette::muted, width - name_w);
+                ui::text(*list, fonts.regular, time_label(m.timestamp), x + name_w + what_w + 12,
+                         cy + 26, 18, palette::muted);
             }
             return cy + 36 - y;
         }
@@ -2042,7 +2166,8 @@ class Discord final : public app::Concept
                 float rx = x;
                 if (!m.reply_author.empty())
                 {
-                    draw_avatar(*list, m.reply_avatar, rx + 12, cy + 18, 12, m.reply_author_id, m.reply_author);
+                    draw_avatar(*list, m.reply_avatar, rx + 12, cy + 18, 12, m.reply_author_id,
+                                m.reply_author);
                     rx += 30;
                     rx += label(*list, fonts.semibold, "@" + m.reply_author, rx, cy + 25, 20,
                                 discord::role_color(m.reply_color, palette::header), 300) +
@@ -2050,7 +2175,8 @@ class Discord final : public app::Concept
                 }
                 std::string preview = m.reply_content;
                 std::replace(preview.begin(), preview.end(), '\n', ' ');
-                label(*list, fonts.regular, preview, rx, cy + 25, 20, palette::interactive, x + width - rx);
+                label(*list, fonts.regular, preview, rx, cy + 25, 20, palette::interactive,
+                      x + width - rx);
             }
             cy += 36;
         }
@@ -2059,8 +2185,8 @@ class Discord final : public app::Concept
         {
             if (list)
             {
-                draw_avatar(*list, m.avatar_url, layout::avatar_cx, cy + layout::avatar * 0.5f, layout::avatar * 0.5f,
-                            m.author_id, m.author);
+                draw_avatar(*list, m.avatar_url, layout::avatar_cx, cy + layout::avatar * 0.5f,
+                            layout::avatar * 0.5f, m.author_id, m.author);
                 float nx = x;
                 nx += label(*list, fonts.semibold, m.author, nx, cy + 26, 24,
                             discord::role_color(m.color, palette::header), width * 0.6f);
@@ -2069,14 +2195,16 @@ class Discord final : public app::Concept
                     draw_bot_tag(*list, nx + 8, cy + 25);
                     nx += 8 + fonts.semibold.measure("UYG", 15) + 12;
                 }
-                ui::text(*list, fonts.regular, time_label(m.timestamp), nx + 12, cy + 25, 18, palette::muted);
+                ui::text(*list, fonts.regular, time_label(m.timestamp), nx + 12, cy + 25, 18,
+                         palette::muted);
             }
             cy += 34;
         }
 
         if (content_visible(m) || (m.edited && !m.content.empty()))
         {
-            const RichText &text = rich(m.id + ":c", m.content, width, 24, palette::normal, &m, m.edited);
+            const RichText &text =
+                rich(m.id + ":c", m.content, width, 24, palette::normal, &m, m.edited);
             if (list)
                 discord::draw_rich(*list, fonts, text, x, cy, images_, clock_);
             cy += text.height;
@@ -2097,11 +2225,16 @@ class Discord final : public app::Concept
             {
                 list->bordered_rect(card, 12, palette::code_bg, 1.5f, palette::code_border);
                 list->rounded_rect({card.x + 24, card.y + 21, 40, 54}, 6, palette::blurple);
-                list->rounded_rect({card.x + 32, card.y + 40, 24, 3}, 1, palette::white.with_alpha(0.8f));
-                list->rounded_rect({card.x + 32, card.y + 49, 24, 3}, 1, palette::white.with_alpha(0.8f));
-                list->rounded_rect({card.x + 32, card.y + 58, 16, 3}, 1, palette::white.with_alpha(0.8f));
-                label(*list, fonts.regular, a.filename, card.x + 84, card.y + 44, 24, palette::link, card.w - 108);
-                ui::text(*list, fonts.regular, file_size(a.size), card.x + 84, card.y + 72, 18, palette::muted);
+                list->rounded_rect({card.x + 32, card.y + 40, 24, 3}, 1,
+                                   palette::white.with_alpha(0.8f));
+                list->rounded_rect({card.x + 32, card.y + 49, 24, 3}, 1,
+                                   palette::white.with_alpha(0.8f));
+                list->rounded_rect({card.x + 32, card.y + 58, 16, 3}, 1,
+                                   palette::white.with_alpha(0.8f));
+                label(*list, fonts.regular, a.filename, card.x + 84, card.y + 44, 24, palette::link,
+                      card.w - 108);
+                ui::text(*list, fonts.regular, file_size(a.size), card.x + 84, card.y + 72, 18,
+                         palette::muted);
             }
             cy += card.h + 6;
         }
@@ -2112,7 +2245,8 @@ class Discord final : public app::Concept
             if (s.url.empty())
             {
                 if (list)
-                    label(*list, fonts.regular, "[Çıkartma: " + s.name + "]", x, cy + 26, 22, palette::muted, width);
+                    label(*list, fonts.regular, "[Çıkartma: " + s.name + "]", x, cy + 26, 22,
+                          palette::muted, width);
                 cy += 36;
                 continue;
             }
@@ -2145,8 +2279,8 @@ class Discord final : public app::Concept
         return cy + 4 - y;
     }
 
-    float embed_block(gfx::DrawList *list, const dc::Message &m, const dc::Embed &e, const std::string &key, float x,
-                      float y, float width) const
+    float embed_block(gfx::DrawList *list, const dc::Message &m, const dc::Embed &e,
+                      const std::string &key, float x, float y, float width) const
     {
         const auto &fonts = context_.fonts;
         float card_w = std::min(width, 720.0f);
@@ -2162,13 +2296,15 @@ class Discord final : public app::Concept
         {
             const float h = embed_block(nullptr, m, e, key, x, y, width);
             list->rounded_rect({x, y, card_w, h}, 6, palette::code_bg);
-            list->rounded_rect({x, y, 6, h}, 3, e.has_color ? Color::rgb(e.color) : palette::code_border);
+            list->rounded_rect({x, y, 6, h}, 3,
+                               e.has_color ? Color::rgb(e.color) : palette::code_border);
         }
         float cy = y + pad;
         if (!e.provider.empty())
         {
             if (list)
-                label(*list, fonts.regular, e.provider, inner_x, cy + 18, 18, palette::interactive, text_w);
+                label(*list, fonts.regular, e.provider, inner_x, cy + 18, 18, palette::interactive,
+                      text_w);
             cy += 30;
         }
         if (!e.author.empty())
@@ -2182,14 +2318,15 @@ class Discord final : public app::Concept
                         list->image(tex, {ax, cy, 36, 36}, gfx::kFullUv, palette::white, 18);
                     ax += 48;
                 }
-                label(*list, fonts.semibold, e.author, ax, cy + 26, 21, palette::header, text_w - (ax - inner_x));
+                label(*list, fonts.semibold, e.author, ax, cy + 26, 21, palette::header,
+                      text_w - (ax - inner_x));
             }
             cy += 42;
         }
         if (!e.title.empty())
         {
-            const RichText &text =
-                rich(key + ":t", "**" + e.title + "**", text_w, 24, e.url.empty() ? palette::header : palette::link, &m);
+            const RichText &text = rich(key + ":t", "**" + e.title + "**", text_w, 24,
+                                        e.url.empty() ? palette::header : palette::link, &m);
             if (list)
                 discord::draw_rich(*list, fonts, text, inner_x, cy, images_, clock_);
             cy += text.height + 6;
@@ -2214,7 +2351,8 @@ class Discord final : public app::Concept
                 const dc::EmbedField &f = e.fields[i + k];
                 const float fx = inner_x + static_cast<float>(k) * (col_w + 24);
                 const std::string fkey = key + ":f" + std::to_string(i + k);
-                const RichText &name = rich(fkey + "n", "**" + f.name + "**", col_w, 21, palette::header, &m);
+                const RichText &name =
+                    rich(fkey + "n", "**" + f.name + "**", col_w, 21, palette::header, &m);
                 const RichText &value = rich(fkey + "v", f.value, col_w, 21, palette::normal, &m);
                 if (list)
                 {
@@ -2243,20 +2381,23 @@ class Discord final : public app::Concept
         if (!e.footer.empty())
         {
             if (list)
-                label(*list, fonts.regular, e.footer, inner_x, cy + 20, 18, palette::interactive, full_w);
+                label(*list, fonts.regular, e.footer, inner_x, cy + 20, 18, palette::interactive,
+                      full_w);
             cy += 30;
         }
         float h = cy - y + pad - 6;
         if (thumb)
         {
             if (list)
-                draw_media(*list, e.thumbnail, x + card_w - pad - static_cast<float>(e.thumbnail.width), y + pad);
+                draw_media(*list, e.thumbnail,
+                           x + card_w - pad - static_cast<float>(e.thumbnail.width), y + pad);
             h = std::max(h, static_cast<float>(e.thumbnail.height) + pad * 2);
         }
         return h;
     }
 
-    float reactions_block(gfx::DrawList *list, const dc::Message &m, float x, float y, float width) const
+    float reactions_block(gfx::DrawList *list, const dc::Message &m, float x, float y,
+                          float width) const
     {
         const auto &fonts = context_.fonts;
         float cx = x;
@@ -2274,7 +2415,8 @@ class Discord final : public app::Concept
             {
                 const Rect pill{cx, cy, w, 36};
                 if (r.me)
-                    list->bordered_rect(pill, 12, palette::blurple.with_alpha(0.15f), 1.5f, palette::blurple);
+                    list->bordered_rect(pill, 12, palette::blurple.with_alpha(0.15f), 1.5f,
+                                        palette::blurple);
                 else
                     list->rounded_rect(pill, 12, palette::code_bg);
                 if (const std::uint32_t tex = images_.get(r.emoji_url, 48, 48, clock_))
@@ -2310,11 +2452,13 @@ class Discord final : public app::Concept
 
         if (snap_.loading_messages && snap_.messages.empty())
         {
-            ui::text(list, fonts.regular, T("Mesajlar yükleniyor..."), center, 540, 24, palette::muted, gfx::Align::center);
+            ui::text(list, fonts.regular, T("Mesajlar yükleniyor..."), center, 540, 24,
+                     palette::muted, gfx::Align::center);
             return;
         }
         if (!snap_.channel_error.empty())
-            ui::text(list, fonts.regular, snap_.channel_error, center, bottom - 8, 22, palette::red, gfx::Align::center);
+            ui::text(list, fonts.regular, snap_.channel_error, center, bottom - 8, 22, palette::red,
+                     gfx::Align::center);
         if (snap_.messages.empty())
         {
             draw_channel_start(list, open, bottom);
@@ -2328,14 +2472,15 @@ class Discord final : public app::Concept
         for (; i >= 0 && y > top; --i)
         {
             const dc::Message &m = snap_.messages[static_cast<std::size_t>(i)];
-            const dc::Message *previous = i > 0 ? &snap_.messages[static_cast<std::size_t>(i - 1)] : nullptr;
+            const dc::Message *previous =
+                i > 0 ? &snap_.messages[static_cast<std::size_t>(i - 1)] : nullptr;
             const bool header = starts_group(m, previous);
             const bool divider = !previous || day_key(previous->timestamp) != day_key(m.timestamp);
             const float h = message_block(nullptr, m, header, 0);
             y -= h;
             if (i == last && column_ == Column::messages)
-                list.rounded_rect({layout::chat_x, y + (header ? 16.0f : 0.0f), right - layout::chat_x,
-                                   h - (header ? 16.0f : 0.0f)},
+                list.rounded_rect({layout::chat_x, y + (header ? 16.0f : 0.0f),
+                                   right - layout::chat_x, h - (header ? 16.0f : 0.0f)},
                                   0, palette::message_hover);
             message_block(&list, m, header, y);
             if (divider)
@@ -2380,7 +2525,8 @@ class Discord final : public app::Concept
     void draw_composer(gfx::DrawList &list, const dc::Channel &open) const
     {
         const auto &fonts = context_.fonts;
-        const Rect box{layout::chat_x + 24, layout::composer_y, chat_right() - layout::chat_x - 48, layout::composer_h};
+        const Rect box{layout::chat_x + 24, layout::composer_y, chat_right() - layout::chat_x - 48,
+                       layout::composer_h};
         list.rounded_rect(box, 12, palette::input);
         const float cy = box.y + box.h * 0.5f;
         list.circle(box.x + 36, cy, 18, palette::interactive);
@@ -2394,23 +2540,29 @@ class Discord final : public app::Concept
         list.circle(rx - 9, cy - 4, 2.2f, palette::interactive);
         list.line(rx - 20, cy + 5, rx - 8, cy + 5, 2.5f, palette::interactive);
         rx -= 48;
-        list.bordered_rect({rx - 28, cy - 14, 28, 28}, 7, palette::clear, 2.5f, palette::interactive);
+        list.bordered_rect({rx - 28, cy - 14, 28, 28}, 7, palette::clear, 2.5f,
+                           palette::interactive);
         list.line(rx - 10, cy + 14, rx, cy + 4, 2.5f, palette::interactive);
         rx -= 48;
-        list.bordered_rect({rx - 34, cy - 12, 34, 24}, 5, palette::clear, 2.5f, palette::interactive);
-        ui::text(list, fonts.semibold, "GIF", rx - 17, cy + 5.5f, 14, palette::interactive, gfx::Align::center);
+        list.bordered_rect({rx - 34, cy - 12, 34, 24}, 5, palette::clear, 2.5f,
+                           palette::interactive);
+        ui::text(list, fonts.semibold, "GIF", rx - 17, cy + 5.5f, 14, palette::interactive,
+                 gfx::Align::center);
         rx -= 48;
-        list.bordered_rect({rx - 28, cy - 10, 28, 24}, 4, palette::clear, 2.5f, palette::interactive);
+        list.bordered_rect({rx - 28, cy - 10, 28, 24}, 4, palette::clear, 2.5f,
+                           palette::interactive);
         list.line(rx - 14, cy - 10, rx - 14, cy + 14, 2.5f, palette::interactive);
         list.line(rx - 28, cy - 2, rx, cy - 2, 2.5f, palette::interactive);
         rx -= 52;
         const float glyph_w = ui::button_width(ui::Button::square, 30);
-        ui::draw_button(list, fonts, ui::GlyphStyle::dark(), ui::Button::square, rx - glyph_w, cy, 30);
+        ui::draw_button(list, fonts, ui::GlyphStyle::dark(), ui::Button::square, rx - glyph_w, cy,
+                        30);
         rx -= glyph_w + 16;
 
         const std::string hint = is_dm(open) ? T("@%s kullanıcısına mesaj gönder", open.name)
                                              : T("#%s kanalına mesaj gönder", open.name);
-        label(list, fonts.regular, hint, box.x + 72, cy + 9, 24, palette::placeholder, rx - box.x - 72);
+        label(list, fonts.regular, hint, box.x + 72, cy + 9, 24, palette::placeholder,
+              rx - box.x - 72);
     }
 
     // ---- members --------------------------------------------------------------
@@ -2420,7 +2572,8 @@ class Discord final : public app::Concept
         const auto &fonts = context_.fonts;
         const float x = 1920 - layout::members_w;
         const float w = layout::members_w;
-        list.rounded_rect({x, layout::header_h + 1, w, 1080 - layout::header_h}, 0, palette::sidebar);
+        list.rounded_rect({x, layout::header_h + 1, w, 1080 - layout::header_h}, 0,
+                          palette::sidebar);
         list.push_clip({x, layout::header_h + 2, w, 1080 - layout::header_h});
         float y = layout::header_h + 12;
         for (const dc::Member &m : snap_.members)
@@ -2430,8 +2583,9 @@ class Discord final : public app::Concept
             if (m.group)
             {
                 y += 24;
-                label(list, fonts.semibold, upper_tr(T(m.label.c_str())) + " — " + std::to_string(m.count), x + 24, y + 18, 18,
-                      palette::muted, w - 48);
+                label(list, fonts.semibold,
+                      upper_tr(T(m.label.c_str())) + " — " + std::to_string(m.count), x + 24,
+                      y + 18, 18, palette::muted, w - 48);
                 y += 36;
                 continue;
             }
@@ -2442,13 +2596,16 @@ class Discord final : public app::Concept
             draw_avatar(list, m.avatar_url, x + 24 + 24, cy, 24, m.id, m.label);
             if (!offline)
             {
-                const Color dot = m.status == "idle" ? palette::idle : m.status == "dnd" ? palette::red : palette::green;
+                const Color dot = m.status == "idle"  ? palette::idle
+                                  : m.status == "dnd" ? palette::red
+                                                      : palette::green;
                 list.circle(x + 24 + 24 + 17, cy + 17, 10, palette::sidebar);
                 list.circle(x + 24 + 24 + 17, cy + 17, 6, dot);
             }
             float nx = x + 24 + 48 + 18;
             nx += label(list, fonts.semibold, m.label, nx, cy + 8.5f, 24,
-                        discord::role_color(m.color, palette::interactive), w - (nx - x) - 24 - (m.bot ? 52.0f : 0.0f));
+                        discord::role_color(m.color, palette::interactive),
+                        w - (nx - x) - 24 - (m.bot ? 52.0f : 0.0f));
             if (m.bot)
                 draw_bot_tag(list, nx + 8, cy + 8);
             if (offline)
@@ -2465,7 +2622,8 @@ class Discord final : public app::Concept
         const auto &fonts = context_.fonts;
         const dc::Channel *open = open_channel();
         over.rounded_rect({0, 0, 1920, 1080}, 0, Color::rgb(0x000000, 0.85f));
-        const std::string title = open ? (is_dm(*open) ? "@" + open->name : "#" + open->name) : std::string();
+        const std::string title =
+            open ? (is_dm(*open) ? "@" + open->name : "#" + open->name) : std::string();
         label(over, fonts.semibold, title, 360, 432, 22, palette::interactive, 1200);
         const Rect box{360, 452, 1200, 96};
         over.rounded_rect(box, 12, palette::input);
@@ -2495,7 +2653,7 @@ class Discord final : public app::Concept
     int invite_qr_size_ = 0;
     int invite_focus_ = 0; // 0: join, 1: later
     bool settings_open_ = false;
-    int settings_section_ = 0; // a Section
+    int settings_section_ = 0;      // a Section
     bool settings_content_ = false; // the focus is in the section's rows, not the list
     int settings_row_ = 0;
     mutable std::string version_;

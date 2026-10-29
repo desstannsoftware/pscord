@@ -151,7 +151,8 @@ struct addrinfo;
 struct sockaddr;
 #define DC_EAI_FAIL 4
 
-int getaddrinfo(const char *node, const char *service, const struct addrinfo *hints, struct addrinfo **result)
+int getaddrinfo(const char *node, const char *service, const struct addrinfo *hints,
+                struct addrinfo **result)
 {
     (void)node;
     (void)service;
@@ -172,8 +173,8 @@ const char *gai_strerror(int code)
     return "name lookup unavailable";
 }
 
-int getnameinfo(const struct sockaddr *address, unsigned int length, char *host, unsigned int host_length,
-                char *service, unsigned int service_length, int flags)
+int getnameinfo(const struct sockaddr *address, unsigned int length, char *host,
+                unsigned int host_length, char *service, unsigned int service_length, int flags)
 {
     (void)address;
     (void)length;
@@ -226,7 +227,8 @@ int sendmmsg(int fd, struct mmsghdr *messages, unsigned int count, int flags)
     return -1;
 }
 
-int recvmmsg(int fd, struct mmsghdr *messages, unsigned int count, int flags, struct timespec *timeout)
+int recvmmsg(int fd, struct mmsghdr *messages, unsigned int count, int flags,
+             struct timespec *timeout)
 {
     (void)fd;
     (void)messages;

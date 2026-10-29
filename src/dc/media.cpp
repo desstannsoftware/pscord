@@ -8,45 +8,56 @@
 
 #include "dc/net/http.hpp"
 
-namespace dc {
+namespace dc
+{
 
-namespace {
+namespace
+{
 
 constexpr int kWorkers = 3;
 constexpr size_t kMaxQueue = 256;
 
 } // namespace
 
-Media& Media::instance() {
+Media &Media::instance()
+{
     static Media media;
     return media;
 }
 
-void Media::request(const std::string& url, int max_w, int max_h) {
-    if (url.empty()) {
+void Media::request(const std::string &url, int max_w, int max_h)
+{
+    if (url.empty())
+    {
         return;
     }
     std::lock_guard<std::mutex> hold(lock_);
-    if (!seen_.insert(url).second) {
+    if (!seen_.insert(url).second)
+    {
         return;
     }
     jobs_.push_front({url, max_w, max_h});
     // Requests that waited this long have scrolled away: let them be asked again.
-    while (jobs_.size() > kMaxQueue) {
+    while (jobs_.size() > kMaxQueue)
+    {
         seen_.erase(jobs_.back().url);
         jobs_.pop_back();
     }
-    if (workers_.empty()) {
-        for (int i = 0; i < kWorkers; ++i) {
+    if (workers_.empty())
+    {
+        for (int i = 0; i < kWorkers; ++i)
+        {
             workers_.emplace_back([this] { run(); });
         }
     }
     wake_.notify_one();
 }
 
-bool Media::take(Picture& out) {
+bool Media::take(Picture &out)
+{
     std::lock_guard<std::mutex> hold(lock_);
-    if (done_.empty()) {
+    if (done_.empty())
+    {
         return false;
     }
     out = std::move(done_.front());
@@ -54,25 +65,31 @@ bool Media::take(Picture& out) {
     return true;
 }
 
-void Media::forget(const std::string& url) {
+void Media::forget(const std::string &url)
+{
     std::lock_guard<std::mutex> hold(lock_);
     seen_.erase(url);
 }
 
-std::string Media::fetch(const std::string& url) {
-    net::Response r = net::request("GET", url,
-                                   {{"User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
-                                                   "(KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36"},
-                                    {"Accept", "image/png,image/jpeg,image/gif,*/*;q=0.5"}});
-    if (r.status != 200) {
+std::string Media::fetch(const std::string &url)
+{
+    net::Response r =
+        net::request("GET", url,
+                     {{"User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+                                     "(KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36"},
+                      {"Accept", "image/png,image/jpeg,image/gif,*/*;q=0.5"}});
+    if (r.status != 200)
+    {
         std::printf("[media] %s -> %d %s\n", url.c_str(), r.status, r.error.c_str());
         return {};
     }
     return std::move(r.body);
 }
 
-void Media::run() {
-    for (;;) {
+void Media::run()
+{
+    for (;;)
+    {
         Job job;
         {
             std::unique_lock<std::mutex> hold(lock_);
@@ -83,7 +100,8 @@ void Media::run() {
         Picture picture;
         picture.url = job.url;
         std::string bytes = fetch(job.url);
-        if (bytes.empty() || !decode_picture(bytes, job.max_w, job.max_h, picture)) {
+        if (bytes.empty() || !decode_picture(bytes, job.max_w, job.max_h, picture))
+        {
             picture.width = picture.height = 0;
             picture.frames.clear();
         }

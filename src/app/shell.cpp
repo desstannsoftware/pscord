@@ -278,8 +278,8 @@ void Shell::draw_chrome()
         ui::text(chrome_, fonts_.display, "PSCord", left, y, 46, white);
         y += 20;
         for (const std::string &line : fonts_.regular.font->wrap(
-                 "Unofficial client for Discord. Connects directly, with the DPI bypass built in.", 24,
-                 kWidth - 112))
+                 "Unofficial client for Discord. Connects directly, with the DPI bypass built in.",
+                 24, kWidth - 112))
         {
             y += 34;
             ui::text(chrome_, fonts_.regular, line, left, y, 24, white.with_alpha(0.75f));

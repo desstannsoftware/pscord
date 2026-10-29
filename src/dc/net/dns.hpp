@@ -7,10 +7,11 @@
 
 #include <string>
 
-namespace dc::net {
+namespace dc::net
+{
 
 // Resolves an IPv4 address with plain DNS on non-standard ports (Quad9 9953,
 // OpenDNS 443), which Turkish ISPs neither hijack nor reset. Results are cached.
-bool resolve(const std::string& host, in_addr& out);
+bool resolve(const std::string &host, in_addr &out);
 
-}  // namespace dc::net
+} // namespace dc::net

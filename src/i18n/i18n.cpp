@@ -7,17 +7,20 @@
 #include <string_view>
 #include <unordered_map>
 
-namespace i18n {
-namespace {
+namespace i18n
+{
+namespace
+{
 
 std::atomic<int> current{int(Lang::en)};
 
-constexpr std::pair<const char*, const char*> kEnglish[] = {
+constexpr std::pair<const char *, const char *> kEnglish[] = {
     // Sign-in and loading
     {"Tekrar hoş geldin!", "Welcome back!"},
     {"Seni tekrar gördüğümüze çok sevindik!", "We're so excited to see you again!"},
     {"BİLGİSAYARDAN GİRİŞ YAP", "SIGN IN FROM A COMPUTER"},
-    {"Aynı ağdaki bir bilgisayarda bu adresi tarayıcıya yaz,", "On a computer on the same network, open this address,"},
+    {"Aynı ağdaki bir bilgisayarda bu adresi tarayıcıya yaz,",
+     "On a computer on the same network, open this address,"},
     {"açılan sayfada e-posta ve şifrenle giriş yap.", "then sign in with your email and password."},
     {"Hazırlanıyor...", "Preparing..."},
     {"%s olarak giriş yapılıyor", "Signing in as %s"},
@@ -65,7 +68,8 @@ constexpr std::pair<const char*, const char*> kEnglish[] = {
     {"Mesajlar yükleniyor...", "Loading messages..."},
     {"%s kanalına hoş geldin!", "Welcome to #%s!"},
     {"Bu, #%s kanalının başlangıcı.", "This is the start of the #%s channel."},
-    {"%s ile olan direkt mesaj geçmişinin başlangıcı.", "This is the beginning of your direct message history with %s."},
+    {"%s ile olan direkt mesaj geçmişinin başlangıcı.",
+     "This is the beginning of your direct message history with %s."},
     {"@%s kullanıcısına mesaj gönder", "Message @%s"},
     {"#%s kanalına mesaj gönder", "Message #%s"},
     {"Mesajını yaz...", "Type your message..."},
@@ -104,7 +108,8 @@ constexpr std::pair<const char*, const char*> kEnglish[] = {
     {"Ses sunucusunun adresi çözülemedi", "Could not resolve the voice server"},
     {"Ses sunucusuna UDP ile ulaşılamadı", "Could not reach the voice server over UDP"},
     {"Ses şifreleme anahtarı alınamadı", "Did not receive the voice encryption key"},
-    {"Ses bağlandı, şifreleme anahtarları bekleniyor", "Voice connected, waiting for encryption keys"},
+    {"Ses bağlandı, şifreleme anahtarları bekleniyor",
+     "Voice connected, waiting for encryption keys"},
     {"Ses kodlayıcı açılamadı", "Could not start the voice encoder"},
     {"Ses hatası: ", "Voice error: "},
     {"Ses kanalına bağlanılıyor...", "Joining the voice channel..."},
@@ -118,7 +123,8 @@ constexpr std::pair<const char*, const char*> kEnglish[] = {
     {"PSCord topluluğuna davet edildin", "You've been invited to the PSCord community"},
     {"%s Çevrimiçi", "%s Online"},
     {"%s Üye", "%s Members"},
-    {"Buradan katılamadık. Telefonunla okutup katıl:", "We couldn't join from here. Scan it with your phone:"},
+    {"Buradan katılamadık. Telefonunla okutup katıl:",
+     "We couldn't join from here. Scan it with your phone:"},
     {"Katıldın!", "Joined!"},
     {"Katılınıyor...", "Joining..."},
     {"Sunucuya Katıl", "Join Server"},
@@ -130,7 +136,8 @@ constexpr std::pair<const char*, const char*> kEnglish[] = {
     {"PSCord %s kuruluyor", "Installing PSCord %s"},
     {"Güncelleme tamamlandı, yeniden başlatılıyor", "Update complete, restarting"},
     {"Tekrar denemek için X'e bas", "Press X to try again"},
-    {"İndirme başarısız oldu. İnternet bağlantını kontrol et.", "The download failed. Check your internet connection."},
+    {"İndirme başarısız oldu. İnternet bağlantını kontrol et.",
+     "The download failed. Check your internet connection."},
     {"İndirilen güncelleme bozuk çıktı.", "The downloaded update is damaged."},
     {"Uygulama klasörüne yazılamadı.", "Could not write to the app folder."},
     {"Güncelleme dosyası açılamadı.", "Could not open the update file."},
@@ -139,41 +146,53 @@ constexpr std::pair<const char*, const char*> kEnglish[] = {
     // The PC sign-in page (dc/web_page.hpp)
     {R"(<html lang="tr">)", R"(<html lang="en">)"},
     {R"(<title>PSCord - Giriş</title>)", R"(<title>PSCord - Sign in</title>)"},
-    {R"(Hesabına giriş yap. Bilgiler doğrudan PS5'e gider, PSCord Discord'a kendisi bağlanır.)", R"(Sign in to your account. Your details go straight to the PS5, and PSCord connects to Discord itself.)"},
+    {R"(Hesabına giriş yap. Bilgiler doğrudan PS5'e gider, PSCord Discord'a kendisi bağlanır.)",
+     R"(Sign in to your account. Your details go straight to the PS5, and PSCord connects to Discord itself.)"},
     {R"(E-posta veya telefon numarası)", R"(Email or phone number)"},
     {R"(>Şifre<)", R"(>Password<)"},
     {R"(İki adımlı doğrulama kodu)", R"(Two-factor authentication code)"},
     {R"(Token ile giriş yap)", R"(Sign in with a token)"},
     {R"(Token ile giriş)", R"(Sign in with a token)"},
     {R"(>Giriş yap<)", R"(>Log In<)"},
-    {R"(Şifren bu bilgisayarda saklanmaz. PS5 yalnızca Discord'un verdiği oturumu tutar.)", R"(Your password is not stored on this computer. The PS5 only keeps the session Discord gives it.)"},
+    {R"(Şifren bu bilgisayarda saklanmaz. PS5 yalnızca Discord'un verdiği oturumu tutar.)",
+     R"(Your password is not stored on this computer. The PS5 only keeps the session Discord gives it.)"},
     {R"("Giriş başarısız")", R"("Sign-in failed")"},
     {R"(Giriş yapıldı. PS5 ekranına bakabilirsin.)", R"(Signed in. Check your PS5 screen.)"},
-    {R"(Doğrulama yüklenemedi, sayfayı yenile.)", R"(The captcha could not load, refresh the page.)"},
+    {R"(Doğrulama yüklenemedi, sayfayı yenile.)",
+     R"(The captcha could not load, refresh the page.)"},
     {R"(Giriş yapılıyor...)", R"(Signing in...)"},
-    {R"(Discord bir doğrulama istiyor: kutuyu işaretle.)", R"(Discord wants a captcha: tick the box.)"},
+    {R"(Discord bir doğrulama istiyor: kutuyu işaretle.)",
+     R"(Discord wants a captcha: tick the box.)"},
     {R"(PS5'e ulaşılamadı. Uygulama açık mı?)", R"(Could not reach the PS5. Is the app open?)"},
-    {R"(Token PS5'e gönderildi. PS5 ekranına bakabilirsin.)", R"(The token was sent to the PS5. Check your PS5 screen.)"},
-    {R"((s.me ? s.me + " olarak" : "") + " PS5'te giriş yapıldı.")", R"("Signed in on PS5" + (s.me ? " as " + s.me : "") + ".")"},
+    {R"(Token PS5'e gönderildi. PS5 ekranına bakabilirsin.)",
+     R"(The token was sent to the PS5. Check your PS5 screen.)"},
+    {R"((s.me ? s.me + " olarak" : "") + " PS5'te giriş yapıldı.")",
+     R"("Signed in on PS5" + (s.me ? " as " + s.me : "") + ".")"},
 
     // The PC sign-in page (dc/web_page.hpp)
     {R"T(<html lang="tr">)T", R"T(<html lang="en">)T"},
     {R"T(<title>PSCord - Giriş</title>)T", R"T(<title>PSCord - Sign in</title>)T"},
-    {R"T(Hesabına giriş yap. Bilgiler doğrudan PS5'e gider, PSCord Discord'a kendisi bağlanır.)T", R"T(Sign in to your account. Your details go straight to the PS5, and PSCord connects to Discord itself.)T"},
+    {R"T(Hesabına giriş yap. Bilgiler doğrudan PS5'e gider, PSCord Discord'a kendisi bağlanır.)T",
+     R"T(Sign in to your account. Your details go straight to the PS5, and PSCord connects to Discord itself.)T"},
     {R"T(E-posta veya telefon numarası)T", R"T(Email or phone number)T"},
     {R"T(>Şifre<)T", R"T(>Password<)T"},
     {R"T(İki adımlı doğrulama kodu)T", R"T(Two-factor authentication code)T"},
     {R"T(Token ile giriş yap)T", R"T(Sign in with a token)T"},
     {R"T(Token ile giriş)T", R"T(Sign in with a token)T"},
     {R"T(>Giriş yap<)T", R"T(>Log In<)T"},
-    {R"T(Şifren bu bilgisayarda saklanmaz. PS5 yalnızca Discord'un verdiği oturumu tutar.)T", R"T(Your password is not stored on this computer. The PS5 only keeps the session Discord gives it.)T"},
+    {R"T(Şifren bu bilgisayarda saklanmaz. PS5 yalnızca Discord'un verdiği oturumu tutar.)T",
+     R"T(Your password is not stored on this computer. The PS5 only keeps the session Discord gives it.)T"},
     {R"T("Giriş başarısız")T", R"T("Sign-in failed")T"},
     {R"T(Giriş yapıldı. PS5 ekranına bakabilirsin.)T", R"T(Signed in. Check your PS5 screen.)T"},
-    {R"T(Doğrulama yüklenemedi, sayfayı yenile.)T", R"T(The captcha could not load, refresh the page.)T"},
-    {R"T(Discord bir doğrulama istiyor: kutuyu işaretle.)T", R"T(Discord wants a captcha: tick the box.)T"},
+    {R"T(Doğrulama yüklenemedi, sayfayı yenile.)T",
+     R"T(The captcha could not load, refresh the page.)T"},
+    {R"T(Discord bir doğrulama istiyor: kutuyu işaretle.)T",
+     R"T(Discord wants a captcha: tick the box.)T"},
     {R"T(PS5'e ulaşılamadı. Uygulama açık mı?)T", R"T(Could not reach the PS5. Is the app open?)T"},
-    {R"T(Token PS5'e gönderildi. PS5 ekranına bakabilirsin.)T", R"T(The token was sent to the PS5. Check your PS5 screen.)T"},
-    {R"T((s.me ? s.me + " olarak" : "") + " PS5'te giriş yapıldı.")T", R"T("Signed in on PS5" + (s.me ? " as " + s.me : "") + ".")T"},
+    {R"T(Token PS5'e gönderildi. PS5 ekranına bakabilirsin.)T",
+     R"T(The token was sent to the PS5. Check your PS5 screen.)T"},
+    {R"T((s.me ? s.me + " olarak" : "") + " PS5'te giriş yapıldı.")T",
+     R"T("Signed in on PS5" + (s.me ? " as " + s.me : "") + ".")T"},
 
     // Settings
     {"KULLANICI AYARLARI", "USER SETTINGS"},
@@ -191,7 +210,8 @@ constexpr std::pair<const char*, const char*> kEnglish[] = {
     {"Açık", "On"},
     {"Kapalı", "Off"},
     {"Sürüm", "Version"},
-    {"Güncellemeler uygulama açılırken otomatik kurulur.", "Updates install automatically when the app opens."},
+    {"Güncellemeler uygulama açılırken otomatik kurulur.",
+     "Updates install automatically when the app opens."},
     {"Topluluğa katıl", "Join the community"},
     {"discord.gg/wfTch3qUa6", "discord.gg/wfTch3qUa6"},
     {"Bir kahve ısmarla", "Buy me a coffee"},
@@ -205,54 +225,66 @@ constexpr std::pair<const char*, const char*> kEnglish[] = {
     {"Kapat", "Close"},
 };
 
-const std::unordered_map<std::string_view, const char*>& english() {
-    static const std::unordered_map<std::string_view, const char*> table(std::begin(kEnglish), std::end(kEnglish));
+const std::unordered_map<std::string_view, const char *> &english()
+{
+    static const std::unordered_map<std::string_view, const char *> table(std::begin(kEnglish),
+                                                                          std::end(kEnglish));
     return table;
 }
 
-constexpr const char* kMonths[2][12] = {
-    {"Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"},
-    {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November",
-     "December"},
+constexpr const char *kMonths[2][12] = {
+    {"Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim",
+     "Kasım", "Aralık"},
+    {"January", "February", "March", "April", "May", "June", "July", "August", "September",
+     "October", "November", "December"},
 };
-constexpr const char* kWeekdays[2][7] = {
+constexpr const char *kWeekdays[2][7] = {
     {"Pazar", "Pazartesi", "Salı", "Çarşamba", "Perşembe", "Cuma", "Cumartesi"},
     {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"},
 };
 
 } // namespace
 
-void set_language(Lang lang) {
+void set_language(Lang lang)
+{
     current.store(int(lang));
 }
 
-Lang language() {
+Lang language()
+{
     return Lang(current.load());
 }
 
-const char* language_name(Lang lang) {
+const char *language_name(Lang lang)
+{
     return lang == Lang::en ? "English" : "Türkçe";
 }
 
-const char* T(const char* turkish) {
-    if (language() == Lang::tr) return turkish;
-    const auto& table = english();
+const char *T(const char *turkish)
+{
+    if (language() == Lang::tr)
+        return turkish;
+    const auto &table = english();
     const auto found = table.find(turkish);
     return found == table.end() ? turkish : found->second;
 }
 
-std::string T(const char* turkish, const std::string& arg) {
+std::string T(const char *turkish, const std::string &arg)
+{
     std::string text = T(turkish);
     const size_t at = text.find("%s");
-    if (at != std::string::npos) text.replace(at, 2, arg);
+    if (at != std::string::npos)
+        text.replace(at, 2, arg);
     return text;
 }
 
-const char* month_name(int month) {
+const char *month_name(int month)
+{
     return kMonths[int(language())][month % 12];
 }
 
-const char* weekday_name(int day) {
+const char *weekday_name(int day)
+{
     return kWeekdays[int(language())][day % 7];
 }
 

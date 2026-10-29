@@ -17,10 +17,12 @@
 
 #include "dc/net/http_server.hpp"
 
-namespace dc {
+namespace dc
+{
 
 // Someone connected to a voice channel.
-struct VoiceUser {
+struct VoiceUser
+{
     std::string id;
     std::string name;
     std::string avatar_url;
@@ -30,7 +32,8 @@ struct VoiceUser {
 
 // A post in a forum or media channel. Its id is also the channel its replies
 // live in, so opening one reads messages like any other channel.
-struct ForumPost {
+struct ForumPost
+{
     std::string id;
     std::string name;
     std::string author;
@@ -39,7 +42,8 @@ struct ForumPost {
     int64_t timestamp = 0; // when it was posted
 };
 
-struct Channel {
+struct Channel
+{
     std::string id;
     std::string name;
     // 0 text, 1 DM, 2 voice, 3 group DM, 4 category, 5 announcement, 13 stage, 15 forum, 16 media
@@ -57,14 +61,16 @@ struct Channel {
     std::vector<ForumPost> posts;       // forum and media channels
 };
 
-struct Role {
+struct Role
+{
     std::string id;
     std::string name;
     uint32_t color = 0; // 0: no colour
     int position = 0;
 };
 
-struct Guild {
+struct Guild
+{
     std::string id; // empty for the direct-messages entry
     std::string name;
     std::string icon_url;
@@ -75,27 +81,31 @@ struct Guild {
     int mentions = 0;
 };
 
-struct MediaRef {
+struct MediaRef
+{
     std::string url; // what to fetch (already sized and in a format we decode)
     int width = 0;
     int height = 0;
     bool video = false; // a still of a video: draw a play button over it
 };
 
-struct Attachment {
+struct Attachment
+{
     std::string filename;
     std::string url;
     uint64_t size = 0;
     MediaRef media; // empty url for files that are not pictures or videos
 };
 
-struct EmbedField {
+struct EmbedField
+{
     std::string name;
     std::string value;
     bool is_inline = false;
 };
 
-struct Embed {
+struct Embed
+{
     std::string type; // rich, image, gifv, video, link, article
     std::string url;
     std::string title;
@@ -111,24 +121,28 @@ struct Embed {
     std::vector<EmbedField> fields;
 };
 
-struct Reaction {
+struct Reaction
+{
     std::string emoji_url;
     std::string name;
     int count = 0;
     bool me = false;
 };
 
-struct Sticker {
+struct Sticker
+{
     std::string name;
     std::string url; // empty for Lottie stickers, which we cannot draw
 };
 
-struct Mention {
+struct Mention
+{
     std::string id;
     std::string name;
 };
 
-struct Message {
+struct Message
+{
     std::string id;
     int type = 0;
     std::string author_id;
@@ -137,7 +151,7 @@ struct Message {
     bool bot = false;
     uint32_t color = 0; // the author's role colour, 0 for none
     std::string content;
-    std::string time;    // HH:MM, local to the message's timestamp
+    std::string time;      // HH:MM, local to the message's timestamp
     int64_t timestamp = 0; // unix seconds
     bool edited = false;
     std::vector<Mention> mentions;
@@ -154,7 +168,8 @@ struct Message {
 };
 
 // One row of the member list: a group heading or a member.
-struct Member {
+struct Member
+{
     bool group = false;
     std::string label; // group name, or the member's name
     int count = 0;
@@ -165,11 +180,25 @@ struct Member {
     bool bot = false;
 };
 
-enum class State { starting, login, connecting, ready, failed };
+enum class State
+{
+    starting,
+    login,
+    connecting,
+    ready,
+    failed
+};
 
 // Our community server, offered now and then to someone who is not in it.
-struct Invite {
-    enum class Join { idle, joining, joined, failed };
+struct Invite
+{
+    enum class Join
+    {
+        idle,
+        joining,
+        joined,
+        failed
+    };
     std::string code; // empty: nothing to offer
     std::string guild_name;
     std::string icon_url;
@@ -178,7 +207,8 @@ struct Invite {
     Join join = Join::idle;
 };
 
-struct Snapshot {
+struct Snapshot
+{
     uint64_t revision = 0;
     State state = State::starting;
     std::string status;       // one line for the user
@@ -200,30 +230,32 @@ struct Snapshot {
     bool loading_posts = false;
     std::vector<Message> messages;
     std::vector<Member> members;
-    std::string voice_guild_id;   // the call we are in, if any
+    std::string voice_guild_id; // the call we are in, if any
     std::string voice_channel_id;
     bool voice_muted = false;
     Invite invite;
 };
 
-class Client {
-public:
-    static Client& instance();
+class Client
+{
+  public:
+    static Client &instance();
 
     // ca_file: PEM bundle for TLS; session_file: where the token is kept;
     // import_file: a token dropped there (over FTP) signs in once, then is deleted.
-    void start(const std::string& ca_file, const std::string& session_file, const std::string& import_file);
+    void start(const std::string &ca_file, const std::string &session_file,
+               const std::string &import_file);
 
     // Copies the state into out when it changed since `revision`; true if it did.
-    bool snapshot_if_newer(uint64_t revision, Snapshot& out);
+    bool snapshot_if_newer(uint64_t revision, Snapshot &out);
 
     // Serves the sign-in page on this port for a PC on the same network.
     void start_web(uint16_t port);
-    void open_channel(const std::string& channel_id);
+    void open_channel(const std::string &channel_id);
     // Reads one post of a forum channel; open_channel(forum_id) goes back to the list.
-    void open_post(const std::string& forum_id, const std::string& post_id);
-    void send_message(const std::string& text);
-    void join_voice(const std::string& guild_id, const std::string& channel_id);
+    void open_post(const std::string &forum_id, const std::string &post_id);
+    void send_message(const std::string &text);
+    void join_voice(const std::string &guild_id, const std::string &channel_id);
     void leave_voice();
     void set_voice_muted(bool muted);
     void logout();
@@ -232,31 +264,32 @@ public:
     // After the first sign-in of every kInviteEvery-th launch, the invite in
     // config_url ({"invite": "discord.gg/..."}) is offered unless we are in that
     // server. counter_file counts the launches.
-    void set_invite_source(const std::string& config_url, const std::string& counter_file);
+    void set_invite_source(const std::string &config_url, const std::string &counter_file);
     void join_invite();
     void dismiss_invite();
     // Opens the community invite card from Settings, ignoring the launch counter.
     void show_community_invite();
 
-private:
+  private:
     Client() = default;
     void run();
     bool login_with_qr();
     void run_gateway();
-    net::HttpReply web_api(const std::string& method, const std::string& path, const std::string& body);
-    std::string web_login(const std::string& path, const std::string& body);
+    net::HttpReply web_api(const std::string &method, const std::string &path,
+                           const std::string &body);
+    std::string web_login(const std::string &path, const std::string &body);
     bool take_pending_token();
     void process_commands();
-    void load_messages(const std::string& channel_id, const std::string& forum_id = {});
-    void load_posts(const std::string& forum_id);
-    void handle_dispatch(const std::string& type, const void* data);
-    void gateway_send(const std::string& text);
-    void request_members(const std::string& guild_id, const std::vector<std::string>& user_ids);
-    void subscribe_member_list(const std::string& guild_id, const std::string& channel_id);
-    void apply_member_list(const void* data);
-    void recolor(Snapshot& s);
-    void mark_read(const std::string& channel_id, const std::string& message_id);
-    void voice_state(const void* state, const std::string& guild_id);
+    void load_messages(const std::string &channel_id, const std::string &forum_id = {});
+    void load_posts(const std::string &forum_id);
+    void handle_dispatch(const std::string &type, const void *data);
+    void gateway_send(const std::string &text);
+    void request_members(const std::string &guild_id, const std::vector<std::string> &user_ids);
+    void subscribe_member_list(const std::string &guild_id, const std::string &channel_id);
+    void apply_member_list(const void *data);
+    void recolor(Snapshot &s);
+    void mark_read(const std::string &channel_id, const std::string &message_id);
+    void voice_state(const void *state, const std::string &guild_id);
     void maybe_start_voice();
     void voice_watchdog();
     void check_invite();
@@ -264,15 +297,16 @@ private:
     void remember_voice();
     void load_remembered_voice();
     void rejoin_voice();
-    void notify(const std::string& text);
+    void notify(const std::string &text);
 
-    template <typename F>
-    void update(F&& change) {
+    template <typename F> void update(F &&change)
+    {
         std::lock_guard<std::mutex> hold(lock_);
         const std::string before = state_.status;
         change(state_);
         state_.revision++;
-        if (state_.status != before && !state_.status.empty()) {
+        if (state_.status != before && !state_.status.empty())
+        {
             std::printf("[dc] %s\n", state_.status.c_str());
         }
     }
@@ -291,9 +325,10 @@ private:
     bool logout_requested_ = false;
     bool reconnect_now_ = false; // skip the pause between gateway attempts
     // Worker thread only.
-    void* gateway_ = nullptr; // net::WebSocket while the gateway runs
-    std::map<std::string, std::map<std::string, std::vector<std::string>>> member_roles_; // guild -> user -> roles
-    std::set<std::string> asked_members_;                                               // guild:user already requested
+    void *gateway_ = nullptr; // net::WebSocket while the gateway runs
+    std::map<std::string, std::map<std::string, std::vector<std::string>>>
+        member_roles_;                    // guild -> user -> roles
+    std::set<std::string> asked_members_; // guild:user already requested
     std::vector<Member> member_items_;
     std::string voice_guild_; // the call asked for or joined
     std::string voice_channel_;

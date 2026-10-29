@@ -3,9 +3,10 @@
 // SPDX-License-Identifier: MIT
 #pragma once
 
-namespace dc::web {
+namespace dc::web
+{
 
-inline constexpr const char* kSignInPage = R"HTML(<!doctype html>
+inline constexpr const char *kSignInPage = R"HTML(<!doctype html>
 <html lang="tr">
 <head>
 <meta charset="utf-8">
@@ -186,7 +187,7 @@ setInterval(async () => {
 )HTML";
 
 // The page's text as written above, served through i18n::T() in the app's language.
-inline constexpr const char* kSignInTexts[] = {
+inline constexpr const char *kSignInTexts[] = {
     R"T(<html lang="tr">)T",
     R"T(<title>PSCord - Giriş</title>)T",
     R"T(Hesabına giriş yap. Bilgiler doğrudan PS5'e gider, PSCord Discord'a kendisi bağlanır.)T",
@@ -207,4 +208,4 @@ inline constexpr const char* kSignInTexts[] = {
     R"T((s.me ? s.me + " olarak" : "") + " PS5'te giriş yapıldı.")T",
 };
 
-}  // namespace dc::web
+} // namespace dc::web

@@ -122,18 +122,19 @@ struct RichText
 };
 
 // Lays blocks out in `width` at a base text size (24 for message text).
-RichText layout_rich(const std::vector<dc::md::Block> &blocks, const ui::Fonts &fonts, float width, float base,
-                     gfx::Color color);
+RichText layout_rich(const std::vector<dc::md::Block> &blocks, const ui::Fonts &fonts, float width,
+                     float base, gfx::Color color);
 void draw_rich(gfx::DrawList &list, const ui::Fonts &fonts, const RichText &text, float x, float y,
                const Images &images, float clock);
 
 // One line with emoji drawn as pictures, cut with "..." past max_w. Returns its width.
-float draw_label(gfx::DrawList &list, const ui::Fonts &fonts, const ui::FontRef &font, const std::string &text,
-                 float x, float baseline, float size, gfx::Color color, float max_w, const Images &images,
-                 float clock);
+float draw_label(gfx::DrawList &list, const ui::Fonts &fonts, const ui::FontRef &font,
+                 const std::string &text, float x, float baseline, float size, gfx::Color color,
+                 float max_w, const Images &images, float clock);
 float measure_label(const ui::FontRef &font, const std::string &text, float size);
 
 // The glyph in front of a channel name: #, megaphone, speaker, rules book...
-void draw_channel_icon(gfx::DrawList &list, int type, bool rules, float x, float cy, float size, gfx::Color color);
+void draw_channel_icon(gfx::DrawList &list, int type, bool rules, float x, float cy, float size,
+                       gfx::Color color);
 
 } // namespace hui::concepts::discord

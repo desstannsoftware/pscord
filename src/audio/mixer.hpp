@@ -184,7 +184,8 @@ class Mixer
     std::array<float, kStreams> stream_gain_{};
     std::array<float, kStreams> stream_target_{};
     std::array<float, kStreams> stream_step_{};
-    std::array<bool, kStreams> stream_music_ = [] {
+    std::array<bool, kStreams> stream_music_ = []
+    {
         std::array<bool, kStreams> all{};
         all.fill(true);
         return all;

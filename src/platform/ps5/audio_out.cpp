@@ -111,7 +111,8 @@ bool AudioOut::start(audio::Mixer &mixer, int port_type, bool external)
     handle_ = -1;
     for (int i = 0; i < attempts; ++i)
     {
-        handle_ = sceAudioOutOpen(users[i], port_type, 0, kGrainFrames, audio::kSampleRate, kFormatS16Stereo);
+        handle_ = sceAudioOutOpen(users[i], port_type, 0, kGrainFrames, audio::kSampleRate,
+                                  kFormatS16Stereo);
         sys::log("[HUI] audio sceAudioOutOpen user=%d port=%d = 0x%08x", users[i], port_type,
                  static_cast<unsigned>(handle_));
         if (handle_ >= 0)
@@ -189,8 +190,8 @@ void AudioOut::run()
         {
             sys::log("[HUI] audio play port=%d grains=%llu errors=%llu peak=%d last=0x%08x", port_,
                      static_cast<unsigned long long>(grains_.load(std::memory_order_relaxed)),
-                     static_cast<unsigned long long>(errors_.load(std::memory_order_relaxed)), content_peak,
-                     static_cast<unsigned>(last));
+                     static_cast<unsigned long long>(errors_.load(std::memory_order_relaxed)),
+                     content_peak, static_cast<unsigned>(last));
             content_peak = 0;
             since_log = 0;
         }

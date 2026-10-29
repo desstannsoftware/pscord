@@ -7,10 +7,11 @@
 #include <string>
 #include <vector>
 
-namespace dc::util {
+namespace dc::util
+{
 
-std::string base64(const void* data, size_t len, bool url = false, bool pad = true);
+std::string base64(const void *data, size_t len, bool url = false, bool pad = true);
 // Accepts both alphabets, with or without padding; false on bad input.
-bool unbase64(const std::string& text, std::vector<unsigned char>& out);
+bool unbase64(const std::string &text, std::vector<unsigned char> &out);
 
 } // namespace dc::util

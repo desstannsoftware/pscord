@@ -15,11 +15,21 @@
 #include <string>
 #include <pthread.h>
 
-namespace update {
+namespace update
+{
 
-enum class Phase { checking, current, downloading, installing, restarting, failed };
+enum class Phase
+{
+    checking,
+    current,
+    downloading,
+    installing,
+    restarting,
+    failed
+};
 
-struct Status {
+struct Status
+{
     Phase phase = Phase::checking;
     std::string version; // the version being installed
     std::string notes;
@@ -28,12 +38,14 @@ struct Status {
     size_t total = 0;
 };
 
-class Updater {
-public:
-    static Updater& instance();
+class Updater
+{
+  public:
+    static Updater &instance();
 
     // current is this build's contentVersion; work_dir holds the download.
-    void start(const std::string& current, const std::string& manifest_url, const std::string& work_dir);
+    void start(const std::string &current, const std::string &manifest_url,
+               const std::string &work_dir);
     // Starts again after a failure.
     void retry();
 
@@ -44,13 +56,13 @@ public:
     // True once, when the new files are in place and the app should restart.
     bool take_restart();
 
-private:
+  private:
     Updater() = default;
     ~Updater();
     void run();
-    bool check(std::string& bundle_url, std::string& sha256, size_t& size);
-    bool install(const std::string& bundle);
-    void set_phase(Phase phase, const std::string& error = {});
+    bool check(std::string &bundle_url, std::string &sha256, size_t &size);
+    bool install(const std::string &bundle);
+    void set_phase(Phase phase, const std::string &error = {});
 
     mutable std::mutex lock_;
     Status status_;
@@ -69,6 +81,6 @@ private:
 constexpr char kBundleMagic[8] = {'P', 'S', 'C', 'U', 'P', 'D', '1', '\n'};
 
 // True when a ("NN.NNN.NNN") is newer than b; false for malformed versions.
-bool is_newer(const std::string& a, const std::string& b);
+bool is_newer(const std::string &a, const std::string &b);
 
 } // namespace update

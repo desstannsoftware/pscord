@@ -231,7 +231,8 @@ int main()
     i18n::set_language(static_cast<i18n::Lang>(shell.settings().language));
     dc_report_missing_imports();
     dc::Client::instance().set_invite_source(kInviteConfig, "/data/ps5discord/invite-launches.txt");
-    dc::Client::instance().start(std::string(kAssets) + "/cacert.pem", std::string(kDataRoot) + "/session.txt",
+    dc::Client::instance().start(std::string(kAssets) + "/cacert.pem",
+                                 std::string(kDataRoot) + "/session.txt",
                                  "/data/ps5discord/token.txt");
     dc::Client::instance().start_web(8090);
     update::Updater::instance().start(version, kUpdateManifest, "/data/ps5discord/update");
