@@ -1,0 +1,9 @@
+# PSCord - Issue chooser.
+# Copyright (C) 2026 Desstann
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+blank_issues_enabled: true
+contact_links:
+  - name: Desstann Homebrew Discord
+    url: https://discord.gg/wfTch3qUa6
+    about: Questions and chat about PSCord and other Desstann apps

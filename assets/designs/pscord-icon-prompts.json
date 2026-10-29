@@ -1,0 +1,10 @@
+[
+  {
+    "name": "pscord-pirate-icon",
+    "prompt": "Square 1:1 app icon for a voice chat app on a game console. Full-bleed rich violet-to-indigo gradient background (#7C5CFF to #3B2BB8) with a soft radial glow behind the character. Center: an ORIGINAL cute pirate mascot character, a round chubby little ghost-like blob with a big skull-and-crossbones-free pirate tricorn hat tilted to one side, a black eye patch over one eye, one big friendly white eye, a small confident grin, and a gaming headset with a tiny boom microphone in front of its mouth. Clean flat vector style with subtle soft shading, bold simple shapes, white and cream body, dark navy hat with gold trim, readable at small sizes. The character must NOT resemble the Discord logo or Clyde mascot: no game-controller-shaped head, no two oval eyes, no horn-like ears. NO text, NO letters, NO logos, NO UI chrome, no border, no rounded corner mask."
+  },
+  {
+    "name": "pscord-pirate-parrot-icon",
+    "prompt": "Square 1:1 app icon for a voice chat app on a game console. Full-bleed deep violet gradient background (#6D4AFF to #2E2190) with faint sparkles. Center: an ORIGINAL friendly cartoon pirate parrot mascot head, bright teal and coral feathers, wearing a small dark navy pirate tricorn hat with gold trim and a black eye patch, wearing a gaming headset with a boom microphone, beak slightly open as if talking. Clean flat vector style, bold simple shapes, subtle soft shading, high contrast, readable at small sizes. Must NOT resemble the Discord logo or Clyde mascot in any way. NO text, NO letters, NO logos, NO UI chrome, no border, no rounded corner mask."
+  }
+]
