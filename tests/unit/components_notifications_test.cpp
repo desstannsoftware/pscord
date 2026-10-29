@@ -726,5 +726,4 @@ TEST_F(ComponentsNotifications, DrawInEveryThemeAndLook)
     }
 }
 
-
 } // namespace

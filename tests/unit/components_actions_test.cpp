@@ -701,5 +701,4 @@ TEST_F(ComponentsActions, DrawsInEveryThemeAndVariant)
     EXPECT_EQ(bar.at(0).badge(), 3);
 }
 
-
 } // namespace

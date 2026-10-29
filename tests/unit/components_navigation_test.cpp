@@ -269,8 +269,6 @@ TEST_F(ComponentsNavigation, BreadcrumbFoldsTheMiddleWhenItDoesNotFit)
     EXPECT_EQ(crumbs_.folded(), 2);
 }
 
-
-
 TEST_F(ComponentsNavigation, PageDotsTurnsPagesOnInput)
 {
     EXPECT_EQ(send(dots_, nav(Direction::right)), Event::changed);
@@ -463,6 +461,5 @@ TEST_F(ComponentsNavigation, DrawsInEveryThemeAndVariant)
     EXPECT_TRUE(menu_.is_open());
     EXPECT_EQ(menu_.focus(), 5);
 }
-
 
 } // namespace

@@ -803,6 +803,4 @@ TEST_F(ComponentsLayout, DrawInEveryThemeAndVariant)
     }
 }
 
-
-
 } // namespace

@@ -605,5 +605,4 @@ TEST_F(ComponentsStructure, DrawsInEveryThemeAndVariant)
     EXPECT_EQ(index_.label(), "M");
 }
 
-
 } // namespace
