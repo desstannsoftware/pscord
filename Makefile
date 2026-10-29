@@ -130,6 +130,8 @@ $(RUNTIME): $(RUNTIME_INPUTS)
 	@bash tools/rebuild-libc.sh
 
 $(DAVE_ARCHIVE): tools/build-dave.sh $(wildcard tools/dave-overlay/*.cpp tools/dave-overlay/dave/*.h)
+	@printf '%s\n' '==> [dave] Ensuring PacBrew OpenSSL headers for libdave'
+	@bash tools/setup-pacbrew-dependencies.sh --environment
 	@printf '%s\n' '==> [dave] Building libdave and mlspp for the console'
 	@bash tools/build-dave.sh
 

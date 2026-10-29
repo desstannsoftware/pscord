@@ -18,6 +18,11 @@ libdave_rev=6396c90
 mlspp_rev=1cc50a124a3bc4e143a787ec934280dc70c1034d
 json_url=https://github.com/nlohmann/json/releases/download/v3.11.3/json.hpp
 
+if [[ ! -f $pacbrew/include/openssl/evp.h ]]; then
+    echo "PacBrew OpenSSL headers missing at $pacbrew/include/openssl (run: make pacbrew)" >&2
+    exit 2
+fi
+
 mkdir -p "$src"
 [[ -d $src/libdave ]] || git clone -q https://github.com/discord/libdave.git "$src/libdave"
 git -C "$src/libdave" checkout -q "$libdave_rev" 2>/dev/null || true
