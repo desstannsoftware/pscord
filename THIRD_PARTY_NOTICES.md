@@ -4,7 +4,7 @@
 
 ps5-homebrew-ui exists thanks to the maintainers and contributors of:
 
-- [ps5-opengl](https://github.com/blackbearreloaded/ps5-opengl), with
+- [ps5-opengl](https://github.com/darkxex/ps5-opengl), with
   [Mesa](https://mesa3d.org/) and OpenGNM PSBC, for OpenGL 4.6 on PS5;
 - [PS5 Native App Boilerplate](https://github.com/blackbearreloaded/ps5-native-app-boilerplate)
   and the [PS5 Payload SDK](https://github.com/ps5-payload-dev/sdk) for the
@@ -77,7 +77,7 @@ the MIT licence.
 ## OpenGL runtime
 
 The PS5 build statically links the
-[ps5-opengl](https://github.com/blackbearreloaded/ps5-opengl) SDK
+[ps5-opengl](https://github.com/darkxex/ps5-opengl) SDK
 (GPL-3.0-or-later), which contains Mesa (MIT) and OpenGNM PSBC components under
 their own licenses. The SDK is fetched or selected at build time and is not
 stored in this repository; its license texts ship inside the SDK archive.
