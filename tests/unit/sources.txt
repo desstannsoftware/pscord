@@ -9,7 +9,9 @@ src/audio/cues.cpp
 src/audio/mixer.cpp
 src/audio/music.cpp
 src/audio/wav.cpp
-src/concepts/*.cpp
+src/concepts/registry.cpp
+# Real Discord UI needs OpenGL + dc/voice; host tests link this stub instead.
+tests/unit/discord_host_stub.cpp
 src/core/frame_stats.cpp
 src/core/input.cpp
 src/core/save_file.cpp
