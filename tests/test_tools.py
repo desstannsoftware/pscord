@@ -239,14 +239,14 @@ class ToolTests(unittest.TestCase):
     def test_pull_request_builds_are_named_and_labelled(self):
         workflow = (ROOT / ".github/workflows/tooling.yml").read_text(encoding="utf-8")
         self.assertIn(
-            'echo "artifact=${GITHUB_REPOSITORY##*/}-PR$PR_NUMBER-$short" >> "$GITHUB_OUTPUT"',
+            'echo "artifact=pscord-PR$PR_NUMBER-$short" >> "$GITHUB_OUTPUT"',
             workflow,
         )
         self.assertIn('echo "BUILD_LABEL=PR $PR_NUMBER, $short" >> "$GITHUB_ENV"', workflow)
         self.assertIn("name: ${{ steps.label.outputs.artifact }}", workflow)
         # The release job still finds a tag's build under its commit.
-        self.assertIn('--name "ps5-homebrew-ui-$GITHUB_SHA"', workflow)
-        self.assertIn('echo "artifact=ps5-homebrew-ui-$GITHUB_SHA" >> "$GITHUB_OUTPUT"', workflow)
+        self.assertIn('--name "$ARTIFACT"', workflow)
+        self.assertIn('echo "artifact=pscord-$GITHUB_SHA" >> "$GITHUB_OUTPUT"', workflow)
         # A contributor's code is never built with write access or secrets.
         self.assertNotIn("pull_request_target:", workflow)
         build = (ROOT / "tools/build.sh").read_text(encoding="utf-8")

@@ -65,7 +65,7 @@ RUNTIME_INPUTS := tools/rebuild-libc.sh tools/build-host-tools.sh tools/ninja-bu
 	$(wildcard tooling/native/runtime/*.txt)
 HOST_UNIT_TEST := build/tests/unit_tests
 
-.PHONY: all app dave ffpkg build init doctor test test-deps test-unit test-integration libc deps opengl host-snapshots fonts pacbrew pacbrew-list assets-check format format-check tidy lint check deploy undeploy clean distclean help
+.PHONY: all app dave build init doctor test test-deps test-unit test-integration libc deps opengl host-snapshots fonts pacbrew pacbrew-list assets-check format format-check tidy lint check deploy undeploy clean distclean help
 
 all: app
 build: app
@@ -139,10 +139,6 @@ app: $(RUNTIME) opengl $(DAVE_ARCHIVE)
 	@printf '%s\n' '==> [app] Compiling, linking, signing, and assembling the app folder'
 	@bash tools/build.sh Folder
 
-ffpkg:
-	@printf '%s\n' '==> [ffpkg] Packing dist/<TITLE_ID> into a ShadowMount UFS2 image'
-	@bash tools/make-ffpkg.sh
-
 deploy:
 	@printf '%s\n' '==> [deploy] Building and publishing the app folder over FTP'
 	@bash tools/deploy.sh
@@ -208,8 +204,7 @@ help:
 	  'make tidy            Run the shared Clang static-analysis policy' \
 	  'make lint            Run format, tidy, metadata, and shell checks' \
 	  'make check           Run lint and build the skeleton app' \
-	  'make ffpkg           Pack dist/<TITLE_ID> into <TITLE_ID>.ffpkg (host, needs dotnet)' \
-  'make deploy PS5_HOST=<address>  Build and FTP-deploy the app folder' \
+	  'make deploy PS5_HOST=<address>  Build and FTP-deploy the app folder' \
 	  'make undeploy PS5_HOST=<address>  Remove this title from /data/homebrew' \
 	  'Build variables:     APP_DEFINITIONS, APP_INCLUDE_PATHS, APP_STATIC_ARCHIVES, APP_IMPORT_STUBS, APP_RUNTIME_MODULES' \
 	  'OpenGL SDK:          PS5_OPENGL_PREFIX=<sdk dir with manifest.sha256> (default: pinned release)' \
